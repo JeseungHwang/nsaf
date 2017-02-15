@@ -1,0 +1,20 @@
+{
+	"DPID" : "",
+	"HardwareAddress" : "",
+	"IPv4":	"",
+	"IPv6" : "",
+	"DeviceName" : "",
+	"OFVersion" : "",
+	"isConnected" : "",
+	"ConnectedTime" : "",
+	"LastUpdateTime" : "",
+	"DisconnectedTime" : "",
+	"State" : "",
+	"AttachementPoint" : {
+		"DPID" : "",
+		"IPv4" : "",
+		"IPv6" : "",
+		"hostId" : "",
+		"port" : ""
+	}
+}

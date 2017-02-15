@@ -1,0 +1,13 @@
+{
+	"hostId" : "",
+	"port" : "",
+	"MACAddress" : "",
+	"HardwareAddress" : "",
+	"isConnected" : "",
+	"connectedTime" : "",
+	"lasatUpdateTime" : ""
+	"AttachementPoint" : {
+		"DPID" : "",
+		"port" : ""
+	}
+}

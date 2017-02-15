@@ -1,0 +1,51 @@
+<div class="toolbardemoBasicUsage" ng-app="Toolbar">
+    <md-content>
+        <md-toolbar class="md-hue-2">
+            <div class="md-toolbar-tools">
+                <md-button class="md-icon-button" aria-label="Settings" ng-click="toggleLeft()">
+                    <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
+                </md-button>
+                <h2>
+	          <span>NSAF</span>
+	        </h2>
+                <span flex=""></span>
+                <md-button class="md-icon-button" aria-label="Favorite">
+                    <md-icon md-svg-icon="img/icons/favorite.svg" style="color: greenyellow;"></md-icon>
+                </md-button>
+                <!-- <md-button class="md-icon-button" aria-label="More">
+                    <md-icon md-svg-icon="img/icons/more_vert.svg"></md-icon>
+                </md-button> -->
+                
+			    <md-menu md-offset="0 -7" md-position-mode="target-right bottom">
+			        <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+			            <md-icon md-svg-icon="img/icons/more_vert.svg"></md-icon>
+		          	</md-button>
+		          	<md-menu-content width="4">
+		            	<md-menu-item ng-repeat="item in [1, 2, 3]">
+		              		<md-button ng-click="ctrl.announceClick($index)"><md-icon md-svg-icon="img/icons/more_vert.svg"></md-icon><span md-menu-align-target="">Option</span> {{item}} </md-button>
+		            	</md-menu-item>
+		          	</md-menu-content>
+		        </md-menu>
+            </div>
+        </md-toolbar>
+    </md-content>
+</div>
+<div layout="column" class="sidenavdemoCustomSidenav">
+    <section layout="row" flex>
+        <md-sidenav class="md-sidenav-left" md-component-id="left" md-disable-backdrop md-whiteframe="4">
+            <md-toolbar class="md-theme-indigo">
+                <h1 class="md-toolbar-tools">Disabled Backdrop</h1>
+            </md-toolbar>
+            <md-content layout-margin>
+                <p>
+                    This sidenav is not showing any backdrop, where users can click on it, to close the sidenav.
+                </p>
+                <md-button ng-click="toggleLeft()" class="md-accent">
+                    Close this Sidenav
+                </md-button>
+            </md-content>
+        </md-sidenav>
+    </section>
+</div>
+
+

@@ -1,0 +1,15 @@
+{
+  "name": "NSAF",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "nodemon ./bin/www"
+  },
+  "dependencies": 
+  {
+    "express": "~4.13.1",
+    "ejs": "~2.4.1",
+    "body-parser": "~1.14.2",
+    "express-session": "~1.13.0",
+    "mysql":"*"
+  }
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko ng-app">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style type="text/css">
+		.inputdemoIcons .inputIconDemo {
+		    min-height: 48px; }
+		.inputdemoIcons md-input-container:not(.md-input-invalid) > md-icon.email {
+		    color: green; }
+		.inputdemoIcons md-input-container:not(.md-input-invalid) > md-icon.name {
+		    color: dodgerblue; }
+		.inputdemoIcons md-input-container.md-input-invalid > md-icon.email,
+		.inputdemoIcons md-input-container.md-input-invalid > md-icon.name {
+		    color: red; }
+    </style>
+</head>
+
+<body ng-app="SignupApp" ng-cloak="" >
+	
+	<div ng-cloak="" ng-controller="AppCtrl">
+		<div ng-include = "'header.html'"></div>
+	</div>
+	
+	<div ng-controller="AppCtrl" layout="column" layout-padding="" ng-cloak="" class="inputdemoIcons">
+		<md-content layout-padding="">
+	        <form name="userProfileForm" ng-submit="">
+				<md-content class="md-no-momentum">
+				    <md-input-container class="md-icon-float md-block">
+				        <!-- Use floating label instead of placeholder -->
+				        <label>ID</label>
+				        <!--<i class="large material-icons">insert_chart</i>-->
+				        <md-icon md-svg-src="img/icons/ic_person_24px.svg" class="uID"></md-icon>
+				        <input ng-model="user.uID" name="uID" type="text" ng-required="true">
+				    </md-input-container>
+				    <div layout="row">
+							<md-input-container flex="50" class="md-icon-float md-block">
+					        <!-- Use floating label instead of placeholder -->
+					        <label>Password</label>
+					        <!--<i class="large material-icons">insert_chart</i>-->
+					        <md-icon md-svg-src="img/icons/ic_person_24px.svg" class="uPW1"></md-icon>
+					        <input ng-model="user.uPW1" type="password" ng-required="true">
+					    </md-input-container>
+					    <md-input-container flex="50" class="md-icon-float md-block">
+					        <!-- Use floating label instead of placeholder -->
+					        <label>Retype password</label>
+					        <!--<i class="large material-icons">insert_chart</i>-->
+					        <md-icon md-svg-src="img/icons/ic_person_24px.svg" class="uPW2"></md-icon>
+					        <input ng-model="user.uPW2" type="password">
+					    </md-input-container>
+					</div>
+					<div layout="row">
+						<md-input-container flex="50" class="md-icon-float md-block">
+					        <!-- Use floating label instead of placeholder -->
+					        <label>Name</label>
+					        <!--<i class="large material-icons">insert_chart</i>-->
+					        <md-icon md-svg-src="img/icons/ic_person_24px.svg" class="name"></md-icon>
+					        <input ng-model="user.name" type="text" ng-required="true">
+					    </md-input-container>
+					    <md-input-container flex="50" md-no-float="" class="md-block">
+					        <md-icon md-svg-src="img/icons/ic_phone_24px.svg"></md-icon>
+					        <input ng-model="user.phone" type="text" placeholder="Phone Number" ng-required="true">
+					    </md-input-container>
+					</div>
+				    
+				    <md-input-container class="md-block">
+				        <!-- Use floating placeholder instead of label -->
+				        <md-icon md-svg-src="img/icons/ic_email_24px.svg" class="email"></md-icon>
+				        <input ng-model="user.email" type="email" placeholder="Email" ng-required="true">
+				    </md-input-container>
+				</md-content>
+
+				<div style="float:right">
+		            <md-button type="submit" class="md-raised md-primary">Signup</md-button>
+		            <md-button type="button" class="md-raised md-defalut">Cancle</md-button>
+		        </div>
+		    </form>
+		</md-content>
+	</div>
+
+
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <!-- Angular Material Library -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+<!--    <script src="/js/app.js"></script>-->
+	<script type="text/javascript">
+		angular.module('SignupApp',['ngMaterial'])
+	 	.controller('AppCtrl', function($scope, $timeout, $mdSidenav, $mdDialog) {
+				$scope.toggleLeft = buildToggler('left');
+		    	$scope.toggleRight = buildToggler('right');
+
+		    	/*$scope.user={
+		    		user.uID:'selab',
+					user.uPW1:'selab1234567890',
+					user.uPW2:'selab1234567890',
+					user.name:'SE 연구실',
+					user.phon:'051-510-3650',
+					user.emai:'selab@pusan.ac.kr'
+		    	};
+*/
+		    	function buildToggler(componentId) {return function() {
+					$mdSidenav(componentId).toggle();
+				}
+
+				 this.openMenu = function($mdOpenMenu, ev) {
+			      originatorEv = ev;
+			      $mdOpenMenu(ev);
+			    };
+		    }
+		});
+	</script>
+</body>
+
+</html>

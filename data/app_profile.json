@@ -1,0 +1,28 @@
+{	
+	"ID" : "",
+	"TYPE" : "",
+	"NAME" : "",
+	"ADMIN" : {
+		"ID" : "",
+		"NAME": ""
+	},
+	"REG_DATE" : "",
+	"LAST_UPDATE" : "",
+	"REQUIREMENT" : {
+		"BANDWIDTH" : "",
+		"JITTER" : "",
+		"LOSS" : "",
+		"DELAY" : "",
+		"AVAILABILITY" : "",
+		"SECURITY" : ""
+	},
+	"NSLA" : {
+		"BANDWIDTH" : "",
+		"JITTER" : "",
+		"LOSS" : "",
+		"DELAY" : "",
+		"AVAILABILITY" : "",
+		"SECURITY" : ""
+	}
+}
+

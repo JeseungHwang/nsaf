@@ -1,0 +1,15 @@
+{
+	"src" : {
+		"DPID" : "",
+		"IPv4" : "",
+		"IPv6" : "",
+		"port" : ""
+	},
+	"dst" : {
+		"DPID" : "",
+		"IPv4" : "",
+		"IPv6" : "",
+		"port" : ""
+	},
+	"direction" : ""
+}
