@@ -18,7 +18,7 @@
 	<div ng-controller="AppCtrl">
 		<div ng-include = "'header.html'"></div>
 	</div>
-	
+
 
 	<div ng-controller="AppCtrl" layout="column" class="inputdemoErrors">
 	    <md-content layout-padding="">
@@ -47,7 +47,7 @@
 		                   <div ng-message="md-maxlength">Please write in IPv4 format.</div>
 		               </div>
 		            </md-input-container>
-					
+
 					<md-input-container flex="50">
 		                <label>Application IPv6</label>
 		                <input md-maxlength="23" required="" md-no-asterisk="" name="ipver6" ng-model="appProf.ipver6">
@@ -70,8 +70,8 @@
 				<div layout="row">
 					<md-input-container flex="50">
 		                <label>Application Manager ID</label>
-		                <input required="" type="text" name="clientID" ng-model="appProf.clientID" minlength="5" maxlength="50" style="width:500px;">
-		                <md-button type="button" class="md-raised md-defalut">ID Check</md-button>
+		                <input id ="clientID" required="" type="text" name="clientID" ng-model="appProf.clientID" minlength="5" maxlength="50" style="width:500px;">
+		                <md-button type="button" class="md-raised md-defalut" ng-click="idCheck()">ID Check</md-button>
 		                <!-- <div ng-messages="appProfileForm.clientEmail.$error" role="alert">
 		                    <div ng-message-exp="['required', 'minlength', 'maxlength', 'pattern']">
 		                        Your email must be between 10 and 100 characters long and look like an e-mail address.
@@ -113,7 +113,7 @@
 <!--    <script src="/js/app.js"></script>	-->
     <script type="text/javascript">
     	angular.module('MainApp',['ngMaterial'])
-	 	.controller('AppCtrl', function($scope, $timeout, $mdSidenav, $mdDialog) {
+	 	.controller('AppCtrl', function($scope, $http, $timeout, $mdSidenav, $mdDialog, $window) {
 				$scope.toggleLeft = buildToggler('left');
 		    	$scope.toggleRight = buildToggler('right');
 
@@ -143,18 +143,50 @@
 		    	];
 
 
+          $scope.idCheck = function() {
+            console.log('check id.. from server db')
+            console.log($scope.appProf.clientID)
+            console.log('http://localhost:8080/Application/'+$scope.appProf.clientID);
+            $http({
+              method  : 'GET',
+              url     : 'http://localhost:8080/Application/'+$scope.appProf.clientID
+            }).then(function successCallback(response) {
+              console.log('success');
+              console.log(response.data);
+              if (response.data == 'ture'){
+                //DB에 데이터가 있는 경우,
+                $window.alert('아이디가 존재합니다.')
+              }else {
+                //DB에 데이터가 없는 경우,
+                if ($window.confirm('아이디가 존재 하지 않습니다. 이 아이디로 하시겠습니까?')) {
+                  document.getElementById('clientID').readOnly = true
+                  document.getElementById('clientID').style.color = 'gray'
+                }
+              }
+            }, function errorCallback(response) {
+              console.log('error occuring');
+              console.log(response);
+            });
+          }
 
-		    	$scope.registProf = function(){		        
-			        console.log($scope.appProf.appName);
-			        console.log($scope.appProf.ipver4);
-			        console.log($scope.appProf.ipver6);
-			        console.log($scope.appProf.appType);
-			        console.log($scope.appProf.description);
-			        console.log($scope.appProf.clientID);
-			        console.log($scope.appProf.clientEmail);
-			        console.log($scope.appProf.sbtn_notification);
-			    };
+		    	$scope.registProf = function(){
+            //아이디 중복확인 체크..
+            if (document.getElementById('clientID').readOnly) {
+              $http({
+                method: 'post',
+                url:'http://localhost:8080/Application/registprofile',
+                data: $scope.appProf,
+                config: 'Content-Type: application/json;'
+              }).then(function (response) {
+                  console.log(response);
+              }, function (response) {
+                  console.log(response);
+              });
+            }else {
+              $window.alert('아이디 중복확인 후 선택해주세요!')
+            }
 
+          }
 			    $scope.onNotification = function(cbState){
 			    	//console.log($scope.appProf.sbtn_notification);
 			    };
