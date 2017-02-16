@@ -37,40 +37,46 @@ module.exports = function(app, fs, mysql, connection)
         var result;
         var sql = 'SELECT ap.APP_ID, si.SVC_NM, ap.APP_NM, me.MEM_ID, me.MEM_NM, ap.APP_RESED, ap.APP_LAST_UDDT, ap.APP_BANDWIDTH, ap.APP_JITTER, ap.APP_DELAY, ap.APP_LOSS, ap.APP_AVAILABILITY, ap.APP_SECURITY, ns.NSLA_BANDWIDTH, ns.NSLA_JITTER, ns.NSLA_DELAY, ns.NSLA_LOSS, ns.NSLA_AVAILABILITY, ns.NSLA_SECURITY FROM app_profile As ap INNER JOIN member AS me on ap.MEM_ID = me.MEM_ID INNER JOIN service_info AS si on ap.SVC_TYPE = si.SVC_TYPE INNER JOIN nsla as ns on ap.NSLA_ID = ns.NSLA_ID';
         var query = connection.query(sql+' where ap.APP_ID='+mysql.escape(req.params.appid), function(err,rows){
-
-            //app_profile.json 파일을 읽어와 DB query값과 매핑 
-            fs.readFile( __dirname + "/../data/app_profile.json", 'utf8',  function(err, data){
-                result = JSON.parse(data);
-                result.ID = rows[0].APP_ID;
-                result.TYPE = rows[0].TYPE;
-                result.NAME = rows[0].NAME;
-                result.ADMIN.ID = rows[0].MEM_ID;
-                result.ADMIN.NAME = rows[0].MEM_NM;
-                result.REG_DATE = rows[0].APP_RESED;
-                result.LAST_UPDATE = rows[0].APP_LAST_UDDT;
-                result.REQUIREMENT.BANDWIDTH = rows[0].APP_BANDWIDTH;
-                result.REQUIREMENT.JITTER = rows[0].APP_JITTER;
-                result.REQUIREMENT.LOSS = rows[0].APP_LOSS;
-                result.REQUIREMENT.DELAY = rows[0].APP_DELAY;
-                result.REQUIREMENT.AVAILABILITY = rows[0].APP_AVAILABILITY;
-                result.REQUIREMENT.SECURITY = rows[0].APP_SECURITY;
-                result.NSLA.BANDWIDTH = rows[0].NSLA_BANDWIDTH;
-                result.NSLA.JITTER = rows[0].NSLA_JITTER;
-                result.NSLA.LOSS = rows[0].NSLA_LOSS;
-                result.NSLA.DELAY = rows[0].NSLA_DELAY;
-                result.NSLA.AVAILABILITY = rows[0].NSLA_AVAILABILITY;
-                result.NSLA.SECURITY = rows[0].NSLA_SECURITY;
-
-                console.log(result);
-                res.json(result);
-            })
+            //app_profile.json 파일을 읽어와 DB query값과 매핑
+            if (err){
+              res.send('error')
+              return
+            }
+            if (rows.length != 0){
+              fs.readFile( __dirname + "/../data/app_profile.json", 'utf8',  function(err, data){
+                  result = JSON.parse(data);
+                  result.ID = rows[0].APP_ID;
+                  result.TYPE = rows[0].TYPE;
+                  result.NAME = rows[0].NAME;
+                  result.ADMIN.ID = rows[0].MEM_ID;
+                  result.ADMIN.NAME = rows[0].MEM_NM;
+                  result.REG_DATE = rows[0].APP_RESED;
+                  result.LAST_UPDATE = rows[0].APP_LAST_UDDT;
+                  result.REQUIREMENT.BANDWIDTH = rows[0].APP_BANDWIDTH;
+                  result.REQUIREMENT.JITTER = rows[0].APP_JITTER;
+                  result.REQUIREMENT.LOSS = rows[0].APP_LOSS;
+                  result.REQUIREMENT.DELAY = rows[0].APP_DELAY;
+                  result.REQUIREMENT.AVAILABILITY = rows[0].APP_AVAILABILITY;
+                  result.REQUIREMENT.SECURITY = rows[0].APP_SECURITY;
+                  result.NSLA.BANDWIDTH = rows[0].NSLA_BANDWIDTH;
+                  result.NSLA.JITTER = rows[0].NSLA_JITTER;
+                  result.NSLA.LOSS = rows[0].NSLA_LOSS;
+                  result.NSLA.DELAY = rows[0].NSLA_DELAY;
+                  result.NSLA.AVAILABILITY = rows[0].NSLA_AVAILABILITY;
+                  result.NSLA.SECURITY = rows[0].NSLA_SECURITY;
+                  //res.json(result);
+              })
+              res.send('ture')
+            }else {
+              res.send('false');
+            }
         });
     });
 
     app.post('/Application', function(req, res){
- 
+
         var result = {};
- 
+
         fs.readFile( __dirname + "/../data/user.json", 'utf8',  function(err, data){
             var users = JSON.parse(data);
             if(users[username]){
@@ -80,10 +86,10 @@ module.exports = function(app, fs, mysql, connection)
                 res.json(result);
                 return;
             }
- 
+
             // ADD TO DATA
             users[username] = req.body;
- 
+
             // SAVE DATA
             fs.writeFile(__dirname + "/../data/user.json",
                          JSON.stringify(users, null, '\t'), "utf8", function(err, data){
@@ -92,6 +98,9 @@ module.exports = function(app, fs, mysql, connection)
             })
         })
     });
+    app.post('/Application/registprofile', function(req, res){
+      console.log(req.body);
+    })
 
 
 
@@ -109,13 +118,13 @@ module.exports = function(app, fs, mysql, connection)
              username: sess.username
          })
      });
- 
+
 
     app.post('/addUser/:username', function(req, res){
- 
+
         var result = {  };
         var username = req.params.username;
- 
+
         // CHECK REQ VALIDITY
         if(!req.body["password"] || !req.body["name"]){
             result["success"] = 0;
@@ -123,7 +132,7 @@ module.exports = function(app, fs, mysql, connection)
             res.json(result);
             return;
         }
- 
+
         // LOAD DATA & CHECK DUPLICATION
         fs.readFile( __dirname + "/../data/user.json", 'utf8',  function(err, data){
             var users = JSON.parse(data);
@@ -134,10 +143,10 @@ module.exports = function(app, fs, mysql, connection)
                 res.json(result);
                 return;
             }
- 
+
             // ADD TO DATA
             users[username] = req.body;
- 
+
             // SAVE DATA
             fs.writeFile(__dirname + "/../data/user.json",
                          JSON.stringify(users, null, '\t'), "utf8", function(err, data){
@@ -148,10 +157,10 @@ module.exports = function(app, fs, mysql, connection)
     });
 
     app.put('/updateUser/:username', function(req, res){
- 
+
         var result = {  };
         var username = req.params.username;
- 
+
         // CHECK REQ VALIDITY
         if(!req.body["password"] || !req.body["name"]){
             result["success"] = 0;
@@ -159,13 +168,13 @@ module.exports = function(app, fs, mysql, connection)
             res.json(result);
             return;
         }
- 
+
         // LOAD DATA
         fs.readFile( __dirname + "/../data/user.json", 'utf8',  function(err, data){
             var users = JSON.parse(data);
             // ADD/MODIFY DATA
             users[username] = req.body;
- 
+
             // SAVE DATA
             fs.writeFile(__dirname + "/../data/user.json",
                          JSON.stringify(users, null, '\t'), "utf8", function(err, data){
@@ -174,14 +183,14 @@ module.exports = function(app, fs, mysql, connection)
             })
         })
     });
- 
- 
+
+
     app.delete('/deleteUser/:username', function(req, res){
         var result = { };
         //LOAD DATA
         fs.readFile(__dirname + "/../data/user.json", "utf8", function(err, data){
             var users = JSON.parse(data);
- 
+
             // IF NOT FOUND
             if(!users[req.params.username]){
                 result["success"] = 0;
@@ -189,10 +198,10 @@ module.exports = function(app, fs, mysql, connection)
                 res.json(result);
                 return;
             }
- 
+
             // DELETE FROM DATA
             delete users[req.params.username];
- 
+
             // SAVE FILE
             fs.writeFile(__dirname + "/../data/user.json",
                          JSON.stringify(users, null, '\t'), "utf8", function(err, data){
@@ -208,7 +217,7 @@ module.exports = function(app, fs, mysql, connection)
     app.get('/login/:username/:password', function(req, res){
         var sess;
         sess = req.session;
- 
+
         fs.readFile(__dirname + "/../data/user.json", "utf8", function(err, data){
             var users = JSON.parse(data);
             var username = req.params.username;
@@ -221,13 +230,13 @@ module.exports = function(app, fs, mysql, connection)
                 res.json(result);
                 return;
             }
- 
+
             if(users[username]["password"] == password){
                 result["success"] = 1;
                 sess.username = username;
                 sess.name = users[username]["name"];
                 res.json(result);
- 
+
             }else{
                 result["success"] = 0;
                 result["error"] = "incorrect";
