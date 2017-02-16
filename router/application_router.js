@@ -100,6 +100,7 @@ module.exports = function(app, fs, mysql, connection)
     });
     app.post('/Application/registprofile', function(req, res){
       console.log(req.body);
+      res.send('success')
     })
 
 
