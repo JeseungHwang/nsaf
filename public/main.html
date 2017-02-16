@@ -179,6 +179,7 @@
                 config: 'Content-Type: application/json;'
               }).then(function (response) {
                   console.log(response);
+                  $window.location.href = 'http://localhost:8080/pages/dashboard.html';
               }, function (response) {
                   console.log(response);
               });
