@@ -12,7 +12,6 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
 
-출처: http://lazydev.tistory.com/entry/Node-JS7-REST-api-만들기put-post [Lazy Dev :: 게으른 개발자]
 app.use(express.static(path.join( __dirname + '/public')));
 //app.use(express.static('public'));
 
