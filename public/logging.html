@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko ng-app">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/angular-ui/bower-ui-grid/master/ui-grid.min.css">
+    <style type="text/css">
+        md-input-container{
+            margin-right: 30px;
+            margin-left: 30px;
+        }
+        .myGrid {
+            width: 500px;
+            height: 250px;
+          }
+    </style>
+</head>
+
+<body ng-app="LoggingApp" ng-cloak="" >
+
+
+    <div ng-controller="MenuCtrl">
+        <div ng-include = "'header.html'"></div>
+    </div>
+    
+
+    <div ng-controller="LoggingCtrl" layout="column" class="inputdemoErrors">
+        <div id="grid1" ui-grid="logGridOpts" class="grid"></div>
+    </div>
+
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <!-- Angular Material Library -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+    <script src="https://cdn.rawgit.com/angular-ui/bower-ui-grid/master/ui-grid.min.js"></script>
+
+    <script type="text/javascript">
+        angular.module('LoggingApp',['ngMaterial', 'ui.grid'])
+        .controller('LoggingCtrl', function($scope, $http, $interval) {
+            var loggingColumnDef = [
+                { name: 'Message' }
+            ];
+            var loggingData = [];
+
+            $scope.logGridOpts = {
+                columnDefs: loggingColumnDef,
+                data: loggingData
+            }
+            
+            $interval(getLoggingData, 5000);
+
+            function getLoggingData(){
+                $http({
+                    method:'GET',
+                    url:'http://localhost:8080/switch',
+                    headers:{'Content-Type':'application/json; charset=utf-8'}
+                })
+                .success(function(data, status, headers, config){
+                    if(data){
+                        $scope.logGridOpts.data.push({
+                            "inetAddress" : data[0].inetAddress,
+                            "connectedSince" : data[0].connectedSince,
+                            "switchDPID" : data[0].switchDPID
+                        });    
+                    }else{
+                        console.log("No data");
+                    }
+                    
+                })
+                .error(function(data, status, headers, config){
+                    console.log(status);
+                });
+            };
+        })
+        .controller('MenuCtrl', function($scope, $http, $interval, $mdSidenav, $mdDialog) {
+            $scope.toggleLeft = buildToggler('left');
+            $scope.toggleRight = buildToggler('right');
+
+            function buildToggler(componentId) {return function() {
+                $mdSidenav(componentId).toggle();
+            };
+
+            this.openMenu = function($mdOpenMenu, ev) {
+              originatorEv = ev;
+              $mdOpenMenu(ev);
+            };
+        }
+    });
+    </script>
+</body>
+
+</html>
