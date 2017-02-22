@@ -7,6 +7,7 @@ var session = require('express-session');	//세션 관련
 var fs = require("fs");						//JSON 파일
 var mysql = require('mysql');				//mysql 관련
 var http = require('http');					//HTTP 통신 관련
+var mongoose = require('mongoose');         //MongoDB 관련
 
 
 app.use(bodyParser.urlencoded({extended:true}));
@@ -16,10 +17,13 @@ app.use(bodyParser.json());
 app.use(express.static(path.join( __dirname + '/public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
+<<<<<<< HEAD
 
 var server = app.listen(8080, function(){
  console.log("Express server has started on port 8080")
 });
+=======
+>>>>>>> 89df8a6995eaf8953a0bcd37ef94276e54a38e61
 
 //mysql 연결하기 위한 정보
 var connection = mysql.createConnection({
@@ -39,7 +43,27 @@ connection.connect(function(err) {
     }
 });
 
+//MongoDB 연결
+var mdb = mongoose.connection;
+mdb.on('error', console.error);
+mdb.once('open', function(){
+    console.log("MongoDB Connected");
+});
+mongoose.connect('mongodb://localhost/nsaf');
+
+//MongoDB에 사용할 Model
+var Log = require('./models/log');
+
 //REST 요청에 따른 Router 등록
 var r_application = require('./router/application_router')(app, fs, mysql, connection);
 var r_switch = require('./router/switch_router')(app, fs, http);
+<<<<<<< HEAD
 var r_logging = require('./router/logging_router')(app, fs, http);
+=======
+var r_logging = require('./router/logging_router')(app, fs, http, Log);
+
+//Server 시작
+var server = app.listen(8080, function(){
+ console.log("Express server has started on port 8080")
+});
+>>>>>>> 89df8a6995eaf8953a0bcd37ef94276e54a38e61
