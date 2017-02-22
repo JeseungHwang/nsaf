@@ -246,15 +246,15 @@
      <script type="text/javascript">
        angular.module('MainApp',['ngMaterial', 'ui.grid'])
         .controller('LoggingCtrl', function($scope, $http, $interval) {
-            /*var loggingColumnDef = [
+            var loggingColumnDef = [
                 { name: 'Timestamp' },
                 { name: 'LogType' },
                 { name: 'Subject' },
                 { name: 'Message' }
-            ];*/
-            var loggingColumnDef = [
-                { name: 'switchDPID' }
             ];
+            /*var loggingColumnDef = [
+                { name: 'switchDPID' }
+            ];*/
             var loggingData = [];
 
             $scope.logGridOpts = {
@@ -272,8 +272,9 @@
                 })
                 .success(function(data, status, headers, config){
                     if(data){
+                      console.log(data);
                         $scope.logGridOpts.data.push({
-                            "switchDPID" : data[0].switchDPID
+                            "Timestamp" : data[0].switchDPID
                         });    
                     }else{
                         console.log("No data");
