@@ -63,7 +63,7 @@
                 <ul class="nav side-menu">
                   <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="#">Dashboard</a></li>
+                      <li><a href="switch_list.html">Switch_List</a></li>
                       <li><a href="#">Dashboard2</a></li>
                       <li><a href="#">Dashboard3</a></li>
                     </ul>
@@ -80,9 +80,9 @@
               <div class="menu_section">
                 <h3>Live On</h3>
                 <ul class="nav side-menu">
-                  <li><a href="logging.html"><i class="fa fa-bug"></i> Real Time SDN <span class="fa fa-chevron-down"></span></a>
+                  <li><a href="#"><i class="fa fa-bug"></i> Real Time SDN <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="#">E-commerce</a></li>
+                      <li><a href="#">Logging</a></li>
                       <li><a href="#">Projects</a></li>
                     </ul>
                   </li>
@@ -264,7 +264,30 @@
                 columnDefs: loggingColumnDef,
                 data: loggingData
             }
+            //$interval(getLoggingData, 1000);
 
+            function getLoggingData(){
+                console.log('hi');
+                $http({
+                    method:'GET',
+                    url:'http://localhost:8080/switch',
+                    headers:{'Content-Type':'application/json; charset=utf-8'}
+                })
+                .success(function(data, status, headers, config){
+                    if(data){
+                      console.log(data);
+                        $scope.logGridOpts.data.push({
+                            "Timestamp" : data[0].switchDPID
+                        });
+                    }else{
+                        console.log("No data");
+                    }
+
+                })
+                .error(function(data, status, headers, config){
+                    console.log(status);
+                });
+            };
         });
     </script>
   </body>
