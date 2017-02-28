@@ -1,6 +1,6 @@
-var express = require('express');   
+var express = require('express');
 var path = require('path');
-var app = express();				        //서버 생성		
+var app = express();				        //서버 생성
 var bodyParser = require('body-parser');	//
 var app = express();
 var session = require('express-session');	//세션 관련
@@ -8,6 +8,11 @@ var fs = require("fs");						//JSON 파일
 var mysql = require('mysql');				//mysql 관련
 var http = require('http');					//HTTP 통신 관련
 var mongoose = require('mongoose');         //MongoDB 관련
+
+
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
+
 
 app.use(express.static(path.join( __dirname + '/public')));
 app.use(bodyParser.json());
