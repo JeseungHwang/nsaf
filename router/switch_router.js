@@ -25,7 +25,7 @@ module.exports = function(app, fs, http)
 		}).end();
     });*/
 
-	app.get('/switch', function(req,res){
+	app.get('/Switch', function(req,res){
         var result = [];
         var restOptions = basicOptions;
         restOptions['method'] = 'GET';

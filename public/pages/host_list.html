@@ -22,6 +22,8 @@
     <link href="../vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
     <!-- JQVMap -->
     <link href="../vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+    <!-- Toastr style -->
+    <link href="../vendors/toastr/toastr.min.css" rel="stylesheet">
     <!-- bootstrap-daterangepicker -->
     <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 
@@ -29,16 +31,6 @@
     <link href="../build/css/custom.min.css" rel="stylesheet">
     <!-- ui grid -->
     <link rel="stylesheet" href="https://cdn.rawgit.com/angular-ui/bower-ui-grid/master/ui-grid.min.css">
-
-    <style type="text/css">
-      .grid{
-        width:100%;
-        height:700px;
-      }
-      .ui-grid-header-cell-primary-focus{
-        text-align: center;
-      }
-    </style>
   </head>
 
   <body class="nav-md" ng-app="MainApp" ng-cloak="" >
@@ -47,7 +39,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><span>Network Traffic Monitor </span></a>
+              <a href="dashborad.html" class="site_title"><span>Network Traffic Monitor </span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -170,8 +162,8 @@
                 </div>
 
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                  <div ng-controller="LoggingCtrl" layout="column" class="inputdemoErrors">
-                      <div id="grid1" ui-grid="logGridOpts" class="grid"></div>
+                  <div ng-controller="HostMonitoringCtrl" layout="column" class="inputdemoErrors">
+                      <div id="grid1" ui-grid="hostGridOpts" ui-grid-selection class="grid"></div>
                   </div>
                 </div>
 
@@ -181,7 +173,7 @@
           </div>
           <br />
 
-          
+
             </div>
           </div>
         </div>
@@ -190,7 +182,7 @@
         <!-- footer content -->
         <footer>
           <div class="pull-right">
-            PNU SeLab - SDN <a href="http://se.ce.pusan.ac.kr">SeLab</a>
+            <a href="http://se.ce.pusan.ac.kr">PNU SELAB</a>
           </div>
           <div class="clearfix"></div>
         </footer>
@@ -247,7 +239,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
-    
+
     <!-- Angular Library -->
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
@@ -261,45 +253,75 @@
 
      <script type="text/javascript">
        angular.module('MainApp',['ngMaterial', 'ui.grid'])
-        .controller('LoggingCtrl', function($scope, $http, $interval) {
-            var loggingColumnDef = [
-                { field: 'Timestamp', width:'150', resizable: false },
-                { field: 'LogType' , width:'100', resizable: false },
-                { field: 'Subject' , width:'150', resizable: false },
-                { field: 'Message' , resizable: false }
+        .controller('HostMonitoringCtrl', function($scope, $http, $interval, uiGridConstants) {
+            var hostColumnDef = [
+                { field: 'IPv4' ,
+                  sort: {
+                    direction: uiGridConstants.ASC,
+                    priority: 1
+                }},
+                { field: 'IPv6' },
+                { field: 'MAC Address' },
+                { field: 'Attache Swtich' },
+                { field: 'State' },
+                { field: 'Connected Time' }
             ];
+            var hostItemList = [];
 
-            var loggingData = [];
+            $scope.hostGridOpts = {
+                columnDefs: hostColumnDef,
+                enableRowSelection: true, 
+                enableRowHeaderSelection: false,
+                data: hostItemList
+            };
 
-            $scope.logGridOpts = {
-                columnDefs: loggingColumnDef,
-                data: loggingData
-            }
-            
-            $interval(getLoggingData, 3000);
+            toastr.options = {
+              closeButton: true,
+              showMethod: 'slideDown',
+              timeOut: 4000
+            };
 
-            function getLoggingData(){
+            getHostInfo();
+            $interval(getHostInfo, 5000);
+
+            function getHostInfo(){
                 $http({
                     method:'GET',
-                    url:'http://localhost:8080/log',
+                    url:'http://localhost:8080/Host',
                     headers:{'Content-Type':'application/json; charset=utf-8'}
                 })
                 .success(function(data, status, headers, config){
-                    if(data){
-                      $scope.logGridOpts.data = [];
-                      angular.forEach(data, function(value, key) {
-                        $scope.logGridOpts.data.push({
-                          "id" : value._id,
-                          "Timestamp" : value.timestamp,
-                          "LogType" : value.logtype,
-                          "Subject" : value.subject,
-                          "Message" : value.message
-                        });
-                      });
-                    }else{
-                        console.log("No data");
-                    }
-                    
+                  if(data){
+                    $scope.hostGridOpts.data = [];
+                    angular.forEach(data, function(value, key) {
+                      if(value.ipv4.length != 0){
+                        var timeStamp = new Date(value.lastSeen/1000*1000);
+
+                        if(value.attachmentPoint.length != 0){
+                          $scope.hostGridOpts.data.push({
+                            "IPv4" : value.ipv4,
+                            "IPv6" : value.ipv6,
+                            "MAC Address" : value.mac,
+                            "Attache Swtich" : value.attachmentPoint[0].switchDPID,
+                            "State" : 'Connected',
+                            "Connected Time" : timeStamp.format("20%y/%m/%d %H:%M:%S")
+                          });  
+                        }else{
+                          $scope.hostGridOpts.data.push({
+                            "IPv4" : value.ipv4,
+                            "IPv6" : value.ipv6,
+                            "MAC Address" : value.mac,
+                            "Attache Swtich" : '',
+                            "State" : 'Disconnected',
+                            "Connected Time" : timeStamp.format("20%y/%m/%d %H:%M:%S")
+                          });
+                            toastr.error(value.ipv4, 'Host is Disconnected');
+                        }
+                      }
+                    });
+                  }else{
+                      console.log("No data");
+                  }
                 })
                 .error(function(data, status, headers, config){
                     console.log(status);

@@ -9,11 +9,6 @@ var mysql = require('mysql');				//mysql 관련
 var http = require('http');					//HTTP 통신 관련
 var mongoose = require('mongoose');         //MongoDB 관련
 
-
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(bodyParser.json());
-
-
 app.use(express.static(path.join( __dirname + '/public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -48,8 +43,10 @@ mongoose.connect('mongodb://localhost/nsaf');
 var Log = require('./models/log');
 
 //REST 요청에 따른 Router 등록
+var r_user = require('./router/user_router')(app, fs, mysql, connection);
 var r_application = require('./router/application_router')(app, fs, mysql, connection);
 var r_switch = require('./router/switch_router')(app, fs, http);
+var r_host = require('./router/host_router')(app, fs, http);
 var r_logging = require('./router/logging_router')(app, fs, http, Log);
 
 //Server 시작

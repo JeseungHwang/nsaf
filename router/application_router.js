@@ -1,5 +1,11 @@
 module.exports = function(app, fs, mysql, connection)
 {
+    var moment = require('moment');
+    
+    function getDateTime(){
+        return moment().format('YYYY-MM-DD hh:mm:ss');
+    }
+/*
     app.get('/Application', function(req,res){
         var result=[];
         var sql = 'SELECT ap.APP_ID, si.SVC_NM, ap.APP_NM, me.MEM_ID, me.MEM_NM, ap.APP_RESED, ap.APP_LAST_UDDT, ap.APP_BANDWIDTH, ap.APP_JITTER, ap.APP_DELAY, ap.APP_LOSS, ap.APP_AVAILABILITY, ap.APP_SECURITY, ns.NSLA_BANDWIDTH, ns.NSLA_JITTER, ns.NSLA_DELAY, ns.NSLA_LOSS, ns.NSLA_AVAILABILITY, ns.NSLA_SECURITY FROM app_profile As ap INNER JOIN member AS me on ap.MEM_ID = me.MEM_ID INNER JOIN service_info AS si on ap.SVC_TYPE = si.SVC_TYPE INNER JOIN nsla as ns on ap.NSLA_ID = ns.NSLA_ID';
@@ -66,31 +72,42 @@ module.exports = function(app, fs, mysql, connection)
                   result.NSLA.SECURITY = rows[0].NSLA_SECURITY;
                   //res.json(result);
               })
-              res.send('ture')
+              res.send('ture');
             }else {
               res.send('false');
             }
         });
     });
+*/
 
-   app.post('/Application', function(req, res){
+    app.post('/Application', function(req, res){
+        var adminProf={};
+        adminProf['MEM_ID'] = req.body['adminID'];
+        adminProf['MEM_PW'] = req.body['adminPW'];
+        adminProf['MEM_NM'] = req.body['adminName'];
+        adminProf['MEM_TELL'] = req.body['adminTell'];
+        adminProf['MEM_RESED'] = getDateTime();
+        adminProf['MEM_LAST_UDDT'] = getDateTime();
 
-    //http://bcho.tistory.com/892
-        var appProf = req.body;
-        console.log(appProf);
-        connection.query('insert into table set ?', appProf, function(err,rows){
-            //app_profile.json 파일을 읽어와 DB query값과 매핑
+        connection.query('SELECT MEM_ID from member where MEM_ID= ?', adminProf['MEM_ID'], function(err,result){
             if (err){
-              res.send('error')
-              return
+              res.send('회원 가입 ID 중복체크 error');
+              return;
             }
-
-
-        }
-
-        res.json({"success": 1});
+            if(result.length!=0){ //중복된 ID가 없을 때
+                res.send('false');
+                return;
+            }else{
+                connection.query('INSERT INTO member SET ?', adminProf, function(err,result){
+                    if (err){
+                      res.send('회원 가입 error');
+                      return;
+                    }
+                    res.send('true');
+                });
+            }
+        });
     });
-
     /*
     app.post('/Application', function(req, res){
         var result = {};
@@ -115,18 +132,6 @@ module.exports = function(app, fs, mysql, connection)
             })
         })
     });*/
-
-    app.post('/Application/registprofile', function(req, res){
-      console.log(req.body);
-      res.send('success')
-    })
-
-
-
-
-
-
-
 
      /*app.get('/',function(req,res){
          var sess = req.session;

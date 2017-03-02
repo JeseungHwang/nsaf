@@ -10,7 +10,7 @@
     /* The switch - the box around the slider */
 
     </style>
-    <title>Gentelella Alela! | </title>
+    <title>NSAF</title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -36,14 +36,13 @@
             <form>
               <h1>NSAF Login</h1>
               <div>
-                <input type="text" class="form-control" placeholder="E-mail" required="" />
+                <input type="text" class="form-control" placeholder="ID" required="true" ng-model="logininfo.adminID" name="adminID" />
               </div>
               <div>
-                <input type="password" class="form-control" placeholder="Password" required="" />
+                <input type="password" class="form-control" placeholder="Password" required="true" ng-model="logininfo.adminPW" name="adminPW"/>
               </div>
               <div>
-                <a class="btn btn-default submit btn-lg" href="index.html">Log in</a>
-                <!-- <a class="reset_pass" href="#">Lost your password?</a> -->
+                <input type="button" class="btn btn-default" value="Login" ng-click="login()"></input>
               </div>
 
               <div class="clearfix"></div>
@@ -68,31 +67,44 @@
           <section class="login_content">
             <form>
               <h1>Create Account</h1>
-              <div style="position: relative; height: 54px; width: 260px ">
-                <input type="email" style="width: 260px;" class="form-control" placeholder="Application Manager ID" required="" ng-model="appProf.clientEmail" name="clientEmail"/>
-                <a id="checkid" class="btn btn-default" style="position: relative; left: 190px; top: -63px;">ID Check</a>
+              <h2>Admin Information</h2>
+              <div>
+                <input type="text" class="form-control" placeholder="Admin ID" required="true" ng-model="accountProf.adminID" name="adminID"/>
+                <!-- <a id="checkid" class="btn btn-default" style="position: relative; left: 190px; top: -63px;">ID Check</a> -->
               </div>
               <div>
-                <input type="text" class="form-control" placeholder="Application Name" required="" ng-model="appProf.appName" name="appName"/>
+                <input type="password" class="form-control" placeholder="Password" required="true" ng-model="accountProf.adminPW" name="adminPW"/>
               </div>
               <div>
-                <input type="text" class="form-control" placeholder="Application IPv4" required="" ng-model="appProf.ipver4" name="ipver4"/>
+                <input type="text" class="form-control" placeholder="Admin Name" required="true" ng-model="accountProf.adminName" name="adminName"/>
               </div>
               <div>
-                <input type="text" class="form-control" placeholder="Application IPv6" required="" ng-model="appProf.ipver6" name="ipver6"/>
+                <input type="tell" class="form-control" placeholder="Admin Phone Number" required="true" ng-model="accountProf.adminTell" name="adminTell"/>
+              </div>
+              <br>
+              <h2>Application Information</h2>
+              <br>
+              <div>
+                <input type="text" class="form-control" placeholder="Application Name" required="true" ng-model="accountProf.appName" name="appName"/>
+              </div>
+              <div>
+                <input type="text" class="form-control" placeholder="Application IPv4" required="true" ng-model="accountProf.ipver4" name="ipver4"/>
+              </div>
+              <div>
+                <input type="text" class="form-control" placeholder="Application IPv6" required="true" ng-model="accountProf.ipver6" name="ipver6"/>
               </div>
               <div style="padding-bottom: 13px; position: relative;">
-                <select class="form-control" required="" ng-model="appProf.appType" name="appType">
-                  <option value="">---Please select---</option> <!-- not selected / blank option -->
+                <select class="form-control" required="true" ng-model="accountProf.appType" name="appType">
+                  <option value="">- Application Type -</option>
                   <option ng-repeat="item in appTypeList" value="{{item.id}}">{{item.name}}</option>
                 </select>
               </div>
               <div>
-                <input type="text" class="form-control" placeholder="Description" required="" ng-model="appProf.description" name="description"/>
+                <input type="text" class="form-control" placeholder="Description" required="" ng-model="accountProf.description" name="description"/>
               </div>
+              <br>
               <div>
                 <input type="button" class="btn btn-default" value="Account" ng-click="appAcccount()"></input>
-                <!-- <a id="submitdata" class="btn btn-default submit">Submit</a> -->
               </div>
 
               <div class="clearfix"></div>
@@ -121,11 +133,35 @@
     <script type="text/javascript">
        angular.module('LoginApp',['ngMaterial'])
         .controller('LoginCtrl', function($scope, $http) {
-            
+          $scope.logininfo = {
+            adminID : '123',
+            adminPW : '123'
+          };
+
+          $scope.login = function(){
+            console.log($scope.logininfo);
+            $http({
+              method:'POST',
+              url:'http://localhost:8080/Login',
+              data: $scope.logininfo,
+              headers:{'Content-Type':'application/json; charset=utf-8'}
+            }).success(function(data, status, headers, config){
+              if(data=="true"){
+                window.location = '/pages/dashboard.html';
+              }else{
+                alert("ID 혹은 Password가 틀렸습니다.");
+              }
+            }).error(function(data, status, headers, config){
+              console.log(status);
+            });
+          };
         })
         .controller('AccountCtrl', function($scope, $http) {
-          $scope.appProf={
-            clientEmail:'selab@pusan.ac.kr',
+          $scope.accountProf={
+            adminID:'',
+            adminPW:'',
+            adminName:'',
+            adminTell:'',
             appName:'PNU Tube',
             ipver4:'255.255.255.255',
             ipver6:'255.255.255.255.255.255',
@@ -134,109 +170,39 @@
           };
 
           $scope.appTypeList=[
-            { id:'appType1' , name:'Network Control' },
-            { id:'appType2' , name:'Telephony' },
-            { id:'appType3' , name:'Signaling' },
-            { id:'appType4' , name:'Multimedia Conferencing' },
-            { id:'appType5' , name:'Real-Time Interactive' },
-            { id:'appType6' , name:'Multimedia Streaming' },
-            { id:'appType7' , name:'Broadcast Video' },
-            { id:'appType8' , name:'Low-Latency Data' },
-            { id:'appType9' , name:'OAM' },
-            { id:'appType10' , name:'High-Throughput Data' },
-            { id:'appType11' , name:'Standard' },
-            { id:'appType12' , name:'Low-Priority' }
+            { id:'1' , name:'Network Control' },
+            { id:'2' , name:'Telephony' },
+            { id:'3' , name:'Signaling' },
+            { id:'4' , name:'Multimedia Conferencing' },
+            { id:'5' , name:'Real-Time Interactive' },
+            { id:'6' , name:'Multimedia Streaming' },
+            { id:'7' , name:'Broadcast Video' },
+            { id:'8' , name:'Low-Latency Data' },
+            { id:'9' , name:'OAM' },
+            { id:'10' , name:'High-Throughput Data' },
+            { id:'11' , name:'Standard' },
+            { id:'12' , name:'Low-Priority' }
           ];
 
           $scope.appAcccount = function(){
-            console.log($scope.appProf);
+            console.log($scope.accountProf);
             $http({
-              method: 'POST',
+              method:'POST',
               url:'http://localhost:8080/Application',
-              data: $scope.appProf,
-              config: 'Content-Type: application/json;'
-            }).then(function (response) {
-                console.log(response);
-                //$window.location.href = 'http://localhost:8080/pages/dashboard.html';
-            }, function (response) {
-                console.log(response);
+              data: $scope.accountProf,
+              headers:{'Content-Type':'application/json; charset=utf-8'}
+            }).success(function(data, status, headers, config){
+              if(data=="false"){
+                  alert("ID 가 이미 존재 합니다. 다른 ID를 이용해주세요.");
+                }else{
+                  alert("회원 가입되었습니다.");
+                  window.location = '/pages/login.html#signin';
+                }
+            }).error(function(data, status, headers, config){
+              console.log(status);
             });
           };
         });
-    </script>
-
-    <script type="text/javascript">
-          /*var appProf = {
-		    		appName:'PNU Tube',
-		    		ipver4:'255.255.255.255',
-		    		ipver6:'255.255.255.255.255.255',
-		    		description:'동영상 스트리밍 애플리케이션입니다.',
-		    		clientID:'selab',
-		    		clientEmail:'selab@pusan.ac.kr',
-		    		sbtn_notification:true,
-            type:'Network Control'
-		    	};
-          for (var key in appProf) {
-              if (key == "sbtn_notification") {
-                if ($('#'+key).prop('checked')) {
-                  $('#'+key).prop('checked', appProf[key]);
-                }else {
-                  $('#'+key).prop('checked', appProf[key]);
-                }
-              }else {
-                $('#'+key).val(appProf[key]);
-              }
-          }
-          $('#submitdata').on("click", function(e) {
-            for (var key in appProf) {
-                if (key == "sbtn_notification") {
-                  appProf[key] = $('#'+key).prop('checked')
-                }else {
-                  appProf[key] = $('#'+key).val();
-                }
-            }
-            console.log(appProf);
-            if (document.getElementById('clientID').readOnly) {
-              jQuery.ajax({
-                method: 'post',
-                url:'http://localhost:8080/Application/registprofile',
-                data: appProf,
-                config: 'Content-Type: application/json;'
-              }).then(function (response) {
-                  console.log(response);
-                  window.location.href = 'http://localhost:8080/pages/dashboard.html';
-              }, function (response) {
-                  console.log(response);
-              });
-            }else {
-              window.alert('아이디 중복확인 후 선택해주세요!')
-            }
-          })
-          $('#checkid').on("click", function(e) {
-            console.log('check id.. from server db')
-            console.log(appProf.clientID)
-            console.log('http://localhost:8080/Application/'+appProf.clientID);
-            jQuery.ajax({
-              method  : 'GET',
-              url     : 'http://localhost:8080/Application/'+appProf.clientID
-            }).then(function successCallback(response) {
-              console.log('success');
-              console.log(response.data);
-              if (response.data == 'ture'){
-                //DB에 데이터가 있는 경우,
-                window.alert('아이디가 존재합니다.')
-              }else {
-                //DB에 데이터가 없는 경우,
-                if (window.confirm('아이디가 존재 하지 않습니다. 이 아이디로 하시겠습니까?')) {
-                  document.getElementById('clientID').readOnly = true
-                  document.getElementById('clientID').style.color = 'gray'
-                }
-              }
-            }, function errorCallback(response) {
-              console.log('error occuring');
-              console.log(response);
-            });
-          })*/
     </script>
   </body>
 </html>
