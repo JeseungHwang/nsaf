@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko ng-app">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- Meta, title, CSS, favicons, etc. -->
@@ -25,34 +25,31 @@
     <link href="../build/css/custom.min.css" rel="stylesheet">
   </head>
 
-  <body class="login">
+  <body class="login" ng-app="LoginApp" ng-cloak="" >
     <div>
       <a class="hiddenanchor" id="signup"></a>
       <a class="hiddenanchor" id="signin"></a>
 
       <div class="login_wrapper">
-        <div class="animate form login_form">
+        <div class="animate form login_form"  ng-controller="LoginCtrl">
           <section class="login_content">
             <form>
-              <h1>Login Form</h1>
+              <h1>NSAF Login</h1>
               <div>
-                <input type="text" class="form-control" placeholder="Username" required="" />
+                <input type="text" class="form-control" placeholder="E-mail" required="" />
               </div>
               <div>
                 <input type="password" class="form-control" placeholder="Password" required="" />
               </div>
               <div>
-                <input type="password" class="form-control" placeholder="Password" required="" />
-              </div>
-              <div>
-                <a class="btn btn-default submit" href="index.html">Log in</a>
-                <a class="reset_pass" href="#">Lost your password?</a>
+                <a class="btn btn-default submit btn-lg" href="index.html">Log in</a>
+                <!-- <a class="reset_pass" href="#">Lost your password?</a> -->
               </div>
 
               <div class="clearfix"></div>
 
               <div class="separator">
-                <p class="change_link">New to site?
+                <p class="change_link">
                   <a href="#signup" class="to_register"> Create Account </a>
                 </p>
 
@@ -60,61 +57,42 @@
                 <br />
 
                 <div>
-                  <h1><i class="fa fa-paw"></i> Gentelella Alela!</h1>
-                  <p>©2016 All Rights Reserved. Gentelella Alela! is a Bootstrap 3 template. Privacy and Terms</p>
+                  <p>©2017 All Rights Reserved. PNU SELAB.</p>
                 </div>
               </div>
             </form>
           </section>
         </div>
 
-        <div id="register" class="animate form registration_form">
+        <div id="register" class="animate form registration_form" ng-controller="AccountCtrl">
           <section class="login_content">
             <form>
               <h1>Create Account</h1>
-              <div>
-                <input id="appName" type="text" class="form-control" placeholder="Application Name" required="" />
-              </div>
-              <div>
-                <input id="ipver4" type="text" class="form-control" placeholder="Application IPv4" required="" />
-              </div>
-              <div>
-                <input id="ipver6" type="text" class="form-control" placeholder="Application IPv6" required="" />
-              </div>
-              <div>
-                <input id="clientEmail" type="text" class="form-control" placeholder="pplication Manager Email" required="" />
-              </div>
-              <div>
-                <input id="description" type="text" class="form-control" placeholder="Description" required="" />
-              </div>
-
               <div style="position: relative; height: 54px; width: 260px ">
-                <input id="clientID" type="text" style="width: 260px;" class="form-control" placeholder="Application Manager ID" required="" />
+                <input type="email" style="width: 260px;" class="form-control" placeholder="Application Manager ID" required="" ng-model="appProf.clientEmail" name="clientEmail"/>
                 <a id="checkid" class="btn btn-default" style="position: relative; left: 190px; top: -63px;">ID Check</a>
               </div>
-
-
-              <div style="padding-bottom: 13px; position: relative;">
-                <p class="form-control" style="text-align: left;">System Notification <input id="sbtn_notification" style="position: relative; left: 190px; top: 0px;" type="checkbox"/></p>
+              <div>
+                <input type="text" class="form-control" placeholder="Application Name" required="" ng-model="appProf.appName" name="appName"/>
               </div>
-
-              <div style="padding-bottom: 15px;">
-                <select id="type" name="Application Type" class="form-control">
-                  <option value="Network Control">Network Control</option>
-                  <option value="Telephony">Telephony</option>
-                  <option value="Multimedia Conferencing">Multimedia Conferencing</option>
-                  <option value="Real-Time Interactive">Real-Time Interactive</option>
-                  <option value="Multimedia Streaming">Multimedia Streaming</option>
-                  <option value="Broadcast Video">Broadcast Video</option>
-                  <option value="Low-Latency Data">Low-Latency Data</option>
-                  <option value="OAM">OAM</option>
-                  <option value="High-Throughput Data">High-Throughput Data</option>
-                  <option value="Standard">Standard</option>
-                  <option value="Low-Priority">Low-Priority</option>
+              <div>
+                <input type="text" class="form-control" placeholder="Application IPv4" required="" ng-model="appProf.ipver4" name="ipver4"/>
+              </div>
+              <div>
+                <input type="text" class="form-control" placeholder="Application IPv6" required="" ng-model="appProf.ipver6" name="ipver6"/>
+              </div>
+              <div style="padding-bottom: 13px; position: relative;">
+                <select class="form-control" required="" ng-model="appProf.appType" name="appType">
+                  <option value="">---Please select---</option> <!-- not selected / blank option -->
+                  <option ng-repeat="item in appTypeList" value="{{item.id}}">{{item.name}}</option>
                 </select>
               </div>
               <div>
-                <a id="submitdata" class="btn btn-default submit">Submit</a>
+                <input type="text" class="form-control" placeholder="Description" required="" ng-model="appProf.description" name="description"/>
+              </div>
+              <div>
+                <input type="button" class="btn btn-default" value="Account" ng-click="appAcccount()"></input>
+                <!-- <a id="submitdata" class="btn btn-default submit">Submit</a> -->
               </div>
 
               <div class="clearfix"></div>
@@ -132,8 +110,63 @@
     </div>
     <!-- jQuery -->
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Angular Library -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <script src="https://cdn.rawgit.com/angular-ui/bower-ui-grid/master/ui-grid.min.js"></script>
+    <!-- Angular Material Library -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
     <script type="text/javascript">
-          var appProf = {
+       angular.module('LoginApp',['ngMaterial'])
+        .controller('LoginCtrl', function($scope, $http) {
+            
+        })
+        .controller('AccountCtrl', function($scope, $http) {
+          $scope.appProf={
+            clientEmail:'selab@pusan.ac.kr',
+            appName:'PNU Tube',
+            ipver4:'255.255.255.255',
+            ipver6:'255.255.255.255.255.255',
+            appType:'',
+            description:'동영상 스트리밍 애플리케이션입니다.'
+          };
+
+          $scope.appTypeList=[
+            { id:'appType1' , name:'Network Control' },
+            { id:'appType2' , name:'Telephony' },
+            { id:'appType3' , name:'Signaling' },
+            { id:'appType4' , name:'Multimedia Conferencing' },
+            { id:'appType5' , name:'Real-Time Interactive' },
+            { id:'appType6' , name:'Multimedia Streaming' },
+            { id:'appType7' , name:'Broadcast Video' },
+            { id:'appType8' , name:'Low-Latency Data' },
+            { id:'appType9' , name:'OAM' },
+            { id:'appType10' , name:'High-Throughput Data' },
+            { id:'appType11' , name:'Standard' },
+            { id:'appType12' , name:'Low-Priority' }
+          ];
+
+          $scope.appAcccount = function(){
+            console.log($scope.appProf);
+            $http({
+              method: 'POST',
+              url:'http://localhost:8080/Application',
+              data: $scope.appProf,
+              config: 'Content-Type: application/json;'
+            }).then(function (response) {
+                console.log(response);
+                //$window.location.href = 'http://localhost:8080/pages/dashboard.html';
+            }, function (response) {
+                console.log(response);
+            });
+          };
+        });
+    </script>
+
+    <script type="text/javascript">
+          /*var appProf = {
 		    		appName:'PNU Tube',
 		    		ipver4:'255.255.255.255',
 		    		ipver6:'255.255.255.255.255.255',
@@ -203,7 +236,7 @@
               console.log('error occuring');
               console.log(response);
             });
-          })
+          })*/
     </script>
   </body>
 </html>

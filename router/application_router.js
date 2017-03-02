@@ -73,10 +73,27 @@ module.exports = function(app, fs, mysql, connection)
         });
     });
 
+   app.post('/Application', function(req, res){
+
+    //http://bcho.tistory.com/892
+        var appProf = req.body;
+        console.log(appProf);
+        connection.query('insert into table set ?', appProf, function(err,rows){
+            //app_profile.json 파일을 읽어와 DB query값과 매핑
+            if (err){
+              res.send('error')
+              return
+            }
+
+
+        }
+
+        res.json({"success": 1});
+    });
+
+    /*
     app.post('/Application', function(req, res){
-
         var result = {};
-
         fs.readFile( __dirname + "/../data/user.json", 'utf8',  function(err, data){
             var users = JSON.parse(data);
             if(users[username]){
@@ -97,7 +114,8 @@ module.exports = function(app, fs, mysql, connection)
                 res.json(result);
             })
         })
-    });
+    });*/
+
     app.post('/Application/registprofile', function(req, res){
       console.log(req.body);
       res.send('success')
