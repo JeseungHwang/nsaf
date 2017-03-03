@@ -25,9 +25,8 @@ module.exports = function(app, fs, http, Log)
 	    log.logtype = 'INFO';
 	    log.subject = 'test01';
 	    log.message = req.body.log;
-	    //console.log(log);
-	    res.json({result: 1});	
-        /*log.save(function(err){
+
+        log.save(function(err){
 			if(err){
 				console.error(err);
 				res.json({result: 0});
@@ -35,6 +34,6 @@ module.exports = function(app, fs, http, Log)
 	        }else{
 	        	res.json({result: 1});	
 	        }
-	    });*/
+	    });
     });
 }

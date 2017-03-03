@@ -134,8 +134,8 @@
        angular.module('LoginApp',['ngMaterial'])
         .controller('LoginCtrl', function($scope, $http) {
           $scope.logininfo = {
-            adminID : '123',
-            adminPW : '123'
+            adminID : '',
+            adminPW : ''
           };
 
           $scope.login = function(){
@@ -162,11 +162,11 @@
             adminPW:'',
             adminName:'',
             adminTell:'',
-            appName:'PNU Tube',
-            ipver4:'255.255.255.255',
-            ipver6:'255.255.255.255.255.255',
+            appName:'',
+            ipver4:'',
+            ipver6:'',
             appType:'',
-            description:'동영상 스트리밍 애플리케이션입니다.'
+            description:''
           };
 
           $scope.appTypeList=[

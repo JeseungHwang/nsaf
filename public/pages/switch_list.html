@@ -22,13 +22,17 @@
     <link href="../vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
     <!-- JQVMap -->
     <link href="../vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+    <!-- Toastr style -->
+    <link href="../vendors/toastr/toastr.min.css" rel="stylesheet">
     <!-- bootstrap-daterangepicker -->
     <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
     <!-- ui grid -->
     <link rel="stylesheet" href="https://cdn.rawgit.com/angular-ui/bower-ui-grid/master/ui-grid.min.css">
+
   </head>
 
   <body class="nav-md" ng-app="MainApp" ng-cloak="" >
@@ -49,7 +53,7 @@
               </div>
               <div class="profile_info">
                 <span>Welcome, </span>
-                <h2>Hwang</h2>
+                <h2>Tester</h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -80,16 +84,11 @@
               <div class="menu_section">
                 <h3>Live On</h3>
                 <ul class="nav side-menu">
-                  <li><a href="#"><i class="fa fa-list-alt"></i> Topology Monitoring</span></a></li>
-                  <li><a href="logging_dashboard.html"><i class="fa fa-list-alt"></i> Log Monitoring</span></a></li>
+                  <li><a href="dashboard.html"><i class="fa fa-list-alt"></i> DashBoard</span></a></li>
+                  <li><a href="topology.html"><i class="fa fa-list-alt"></i> Topology Monitoring</span></a></li>
+                  <li><a href="logging.html"><i class="fa fa-list-alt"></i> Log Monitoring</span></a></li>
                   <li><a href="switch_list.html"><i class="fa fa-list-alt"></i> Switch Monitoring</span></a></li>
                   <li><a href="host_list.html"><i class="fa fa-list-alt"></i> Host Monitoring</span></a></li>
-                  <!-- <li><a><i class="fa fa-bug"></i> Real Time SDN <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="logging_dashboard.html">Logging</a></li>
-                      <li><a href="#">Projects</a></li>
-                    </ul>
-                  </li> -->
                 </ul>
               </div>
 
@@ -126,7 +125,7 @@
               <ul class="nav navbar-nav navbar-right">
                 <li class="">
                   <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="images/img.png" alt="">Hwang
+                    <img src="images/img.png" alt="">Tester
                     <span class=" fa fa-angle-down"></span>
                   </a>
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -155,7 +154,7 @@
 
                 <div class="row x_title">
                   <div class="col-md-6">
-                    <h3>NSAF<small>-Logging Monitoring</small></h3>
+                    <h3>NSAF<small>-Switch Monitoring</small></h3>
                   </div>
                 </div>
 
@@ -266,7 +265,6 @@
                 { field: 'Connected Time' }
             ];
             var switchItemList = [];
-            var switchItemBackupList = [];
             $scope.switchGridOpts = {
                 columnDefs: switchColumnDef,
                 enableRowSelection: true, 
@@ -305,7 +303,6 @@
                           "Connected Time" : timeStamp.format("20%y/%m/%d %H:%M:%S")
                         });
                       }
-                      switchItemBackupList = $scope.switchGridOpts.data;  
                     }else{
                         console.log("No data");
                     }
@@ -316,48 +313,65 @@
               };
 
             function getSwitchInfo(){
-                $http({
-                    method:'GET',
-                    url:'http://localhost:8080/Switch',
-                    headers:{'Content-Type':'application/json; charset=utf-8'}
-                })
-                .success(function(data, status, headers, config){
-                    if(data){
-                      var data_len = Object.keys(data[0]).length;
-                      $scope.switchGridOpts.data = [];
-                      for(var i=0;i<data_len;i++){
-                        var timeStamp = new Date((data[2][Object.keys(data[1])[i]]['connectedSince'])/1000*1000);
-                        $scope.switchGridOpts.data.push({
-                          "DPID" : Object.keys(data[0])[i],
-                          "Vendor" : data[0][Object.keys(data[0])[i]]['desc']['manufacturerDescription'],
-                          "Version" : data[0][Object.keys(data[0])[i]]['desc']['version'],
-                          "Name" : data[1][Object.keys(data[1])[i]]['portDesc'][0]['name'],
-                          "MAC Address" : data[1][Object.keys(data[1])[i]]['portDesc'][0]['hardwareAddress'],
-                          "State" : 'Connected',
-                          "Connected Time" : timeStamp.format("20%y/%m/%d %H:%M:%S")
+              $http({
+                  method:'GET',
+                  url:'http://localhost:8080/Switch',
+                  headers:{'Content-Type':'application/json; charset=utf-8'}
+              })
+              .success(function(data, status, headers, config){
+                  if(data){
+                    var data_len = Object.keys(data[0]).length;
+                    var switchItemBackupList = [];
+                    for(var i=0;i<data_len;i++){
+                      var timeStamp = new Date((data[2][Object.keys(data[1])[i]]['connectedSince'])/1000*1000);
+                      switchItemBackupList.push({
+                        "DPID" : Object.keys(data[0])[i],
+                        "Vendor" : data[0][Object.keys(data[0])[i]]['desc']['manufacturerDescription'],
+                        "Version" : data[0][Object.keys(data[0])[i]]['desc']['version'],
+                        "Name" : data[1][Object.keys(data[1])[i]]['portDesc'][0]['name'],
+                        "MAC Address" : data[1][Object.keys(data[1])[i]]['portDesc'][0]['hardwareAddress'],
+                        "State" : 'Connected',
+                        "Connected Time" : timeStamp.format("20%y/%m/%d %H:%M:%S")
+                      });
+                    }
+                    angular.forEach($scope.switchGridOpts.data, function(val_1, key) {
+                      if(JSON.stringify(switchItemBackupList).indexOf(val_1['DPID']) == -1){
+                        val_1['State'] = 'Disconnected';
+                        toastr.error(val_1['DPID'], 'Switch is Disconnected');
+                      }else{
+                        angular.forEach(switchItemBackupList, function(val_2, key) {
+                          if(val_1['DPID'] == val_2['DPID']){
+                            val_1['Vendor'] = val_2['Vendor'];
+                            val_1['Version'] = val_2['Version'];
+                            val_1['Name'] = val_2['Name'];
+                            val_1['MAC Address'] = val_2['MAC Address'];
+                            val_1['State'] = val_2['State'];
+                            val_1['Connected Time'] = val_2['Connected Time'];
+                            return 0;
+                          }else{
+                            if(JSON.stringify($scope.switchGridOpts.data).indexOf(val_2['DPID']) == -1){
+                              toastr.success(val_2['DPID'], 'Switch is Reconnected');
+                              $scope.switchGridOpts.data.push({
+                                "DPID" : val_2['DPID'],
+                                "Vendor" : val_2['Vendor'],
+                                "Version" : val_2['Version'],
+                                "Name" : val_2['Name'],
+                                "MAC Address" : val_2['MAC Address'],
+                                "State" : val_2['State'],
+                                "Connected Time" : val_2['Connected Time']
+                              });
+                              return 0;
+                            }
+                          }
                         });
                       }
-                      if(!angular.equals($scope.switchGridOpts.data, switchItemBackupList)){
-                        /*angular.forEach(switchItemBackupList, function(value, key) {
-                          for(var i=0; i<data_len; i++){
-                            
-                          }
-                        }
-
-                        console.log($scope.switchGridOpts.data);
-                        console.log(switchItemBackupList);*/
-                        toastr.error($scope.switchGridOpts.data, 'Switch is Disconnected');
-                      }else{
-                        console.log('2');
-                        //switchItemBackupList = $scope.switchGridOpts.data;  
-                      }
-                    }else{
-                        console.log("No data");
-                    }
-                })
-                .error(function(data, status, headers, config){
-                    console.log(status);
-                });
+                    });
+                  }else{
+                      console.log("No data");
+                  }
+              }).error(function(data, status, headers, config){
+                  console.log(status);
+              });
             };
         });
     </script>

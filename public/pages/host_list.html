@@ -29,6 +29,7 @@
 
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
     <!-- ui grid -->
     <link rel="stylesheet" href="https://cdn.rawgit.com/angular-ui/bower-ui-grid/master/ui-grid.min.css">
   </head>
@@ -51,7 +52,7 @@
               </div>
               <div class="profile_info">
                 <span>Welcome, </span>
-                <h2>Hwang</h2>
+                <h2>Tester</h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -82,16 +83,11 @@
               <div class="menu_section">
                 <h3>Live On</h3>
                 <ul class="nav side-menu">
-                  <li><a href="#"><i class="fa fa-list-alt"></i> Topology Monitoring</span></a></li>
-                  <li><a href="logging_dashboard.html"><i class="fa fa-list-alt"></i> Log Monitoring</span></a></li>
+                  <li><a href="dashboard.html"><i class="fa fa-list-alt"></i> DashBoard</span></a></li>
+                  <li><a href="topology.html"><i class="fa fa-list-alt"></i> Topology Monitoring</span></a></li>
+                  <li><a href="logging.html"><i class="fa fa-list-alt"></i> Log Monitoring</span></a></li>
                   <li><a href="switch_list.html"><i class="fa fa-list-alt"></i> Switch Monitoring</span></a></li>
                   <li><a href="host_list.html"><i class="fa fa-list-alt"></i> Host Monitoring</span></a></li>
-                  <!-- <li><a><i class="fa fa-bug"></i> Real Time SDN <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="logging_dashboard.html">Logging</a></li>
-                      <li><a href="#">Projects</a></li>
-                    </ul>
-                  </li> -->
                 </ul>
               </div>
 
@@ -128,7 +124,7 @@
               <ul class="nav navbar-nav navbar-right">
                 <li class="">
                   <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="images/img.png" alt="">Hwang
+                    <img src="images/img.png" alt="">Tester
                     <span class=" fa fa-angle-down"></span>
                   </a>
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -157,7 +153,7 @@
 
                 <div class="row x_title">
                   <div class="col-md-6">
-                    <h3>NSAF<small>-Logging Monitoring</small></h3>
+                    <h3>NSAF<small>-Host Monitoring</small></h3>
                   </div>
                 </div>
 
@@ -260,7 +256,6 @@
                     direction: uiGridConstants.ASC,
                     priority: 1
                 }},
-                { field: 'IPv6' },
                 { field: 'MAC Address' },
                 { field: 'Attache Swtich' },
                 { field: 'State' },
@@ -300,7 +295,6 @@
                         if(value.attachmentPoint.length != 0){
                           $scope.hostGridOpts.data.push({
                             "IPv4" : value.ipv4,
-                            "IPv6" : value.ipv6,
                             "MAC Address" : value.mac,
                             "Attache Swtich" : value.attachmentPoint[0].switchDPID,
                             "State" : 'Connected',
@@ -309,7 +303,6 @@
                         }else{
                           $scope.hostGridOpts.data.push({
                             "IPv4" : value.ipv4,
-                            "IPv6" : value.ipv6,
                             "MAC Address" : value.mac,
                             "Attache Swtich" : '',
                             "State" : 'Disconnected',
