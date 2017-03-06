@@ -32,6 +32,12 @@
     <link href="../css/style.css" rel="stylesheet">
     <!-- ui grid -->
     <link rel="stylesheet" href="https://cdn.rawgit.com/angular-ui/bower-ui-grid/master/ui-grid.min.css">
+
+
+    <!-- Netjson Style -->
+    <link href="../vendors/netjson/netjsongraph.css" rel="stylesheet">
+    <link href="../vendors/netjson//netjsongraph-theme.css" rel="stylesheet">
+
   </head>
 
   <body class="nav-md" ng-app="MainApp" ng-cloak="" >
@@ -61,25 +67,6 @@
 
             <!-- sidebar menu -->
             <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-              <!-- <div class="menu_section">
-                <h3>General</h3>
-                <ul class="nav side-menu">
-                  <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="switch_list.html">Switch_List</a></li>
-                      <li><a href="#">Dashboard2</a></li>
-                      <li><a href="#">Dashboard3</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="#">>Tables</a></li>
-                      <li><a href="#">>Table Dynamic</a></li>
-                    </ul>
-                  </li>
-              
-                </ul>
-              </div> -->
               <div class="menu_section">
                 <h3>Live On</h3>
                 <ul class="nav side-menu">
@@ -157,7 +144,7 @@
                   </div>
                 </div>
 
-                <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="" id="topology-graph">
                  
                 </div>
 
@@ -245,12 +232,17 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
     <script src="../vendors/DataModel/datamodel.js"></script>
 
+    <!-- Netjson Library -->
+    <script src="../vendors/d3/d3.min.js"></script>
+    <script src="../vendors/netjson/netjsongraph.js"></script>
+    /*<script>d3.netJsonGraph("../data/topology.json",{el :"#topology-graph"});</script>*/
+
      <script type="text/javascript">
        angular.module('MainApp',['ngMaterial', 'ui.grid'])
         .controller('HostMonitoringCtrl', function($scope, $http, $interval, uiGridConstants) {
-            
-            };
-        });
+            //http 통신을 이용해서 데이터 긁어오기
+            //d3.netJsonGraph("../data/topology.json",{el :"#topology-graph"});
+      });
     </script>
   </body>
 </html>
