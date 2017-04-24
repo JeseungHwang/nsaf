@@ -42,7 +42,9 @@
     d3._windowHeight = function() {
         return window.innerHeight || document.documentElement.clientHeight || 600;
     };
-
+    d3._windowWidth = function() {
+        return window.innerWidth || document.documentElement.clientWidth || 600;
+    };
     /**
       * @function
       *   @name d3._getPosition
@@ -104,7 +106,7 @@
         opts = d3._extend({
             el: "body",
             metadata: true,
-            defaultStyle: true,
+            defaultStyle: false,
             animationAtStart: true,
             scaleExtent: [0.25, 5],
             charge: -130,
@@ -169,6 +171,7 @@
              * Called on zoom and pan
              */
             redraw: function() {
+              d3.event.translate[0] = d3.event.translate[0]
                 panner.attr("transform",
                     "translate(" + d3.event.translate + ") " +
                     "scale(" + d3.event.scale + ")"
@@ -278,6 +281,7 @@
                 body.style("height", d3._windowHeight() - rect.top - rect.bottom + "px");
             }
         }
+
         var el = d3.select(opts.el).style("position", "relative"),
             width = d3._pxToNumber(el.style('width')),
             height = d3._pxToNumber(el.style('height')),
@@ -293,12 +297,17 @@
                       .size([width, height]),
             zoom = d3.behavior.zoom().scaleExtent(opts.scaleExtent),
             // panner is the element that allows zooming and panning
+            //get width
+
+
             panner = el.append("svg")
                        .attr("width", "100%")
                        .attr("height", "100%")
                        .call(zoom.on("zoom", opts.redraw))
                        .append("g")
+                       .attr("transform","translate(0,0)")
                        .style("position", "absolute"),
+
             svg = d3.select(opts.el + " svg"),
             drag = force.drag(),
             overlay = d3.select(opts.el).append("div").attr("class", "njg-overlay"),

@@ -6,7 +6,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>Dash Board | </title>
 
     <!-- Bootstrap -->
@@ -143,9 +142,8 @@
                     <h3>NSAF<small>-Topology Monitoring</small></h3>
                   </div>
                 </div>
-
                 <div class="" id="topology-graph">
-                 
+
                 </div>
 
               </div>
@@ -235,7 +233,10 @@
     <!-- Netjson Library -->
     <script src="../vendors/d3/d3.min.js"></script>
     <script src="../vendors/netjson/netjsongraph.js"></script>
-    /*<script>d3.netJsonGraph("../data/topology.json",{el :"#topology-graph"});</script>*/
+    <script>
+
+    //d3.netJsonGraph("../data/topology.json",{el :"#topology-graph"});
+    </script>
 
      <script type="text/javascript">
        angular.module('MainApp',['ngMaterial', 'ui.grid'])
@@ -243,6 +244,108 @@
             //http 통신을 이용해서 데이터 긁어오기
             //d3.netJsonGraph("../data/topology.json",{el :"#topology-graph"});
       });
+      var net = {};
+      var switchNet = {};
+      $.ajax({
+            method:'GET',
+            url:'../topologyswitch',
+            headers:{'Content-Type':'application/json; charset=utf-8'}
+        })
+        .success(function(data, status, headers, config){
+            if(data){
+              switchNet = data
+              $.ajax({
+                    method:'GET',
+                    url:'../topology',
+                    headers:{'Content-Type':'application/json; charset=utf-8'}
+                })
+                .success(function(data, status, headers, config){
+                    if(data){
+                      console.log(data);
+                      net.type = "NetworkGraph"
+                      net.label = "NetworkGraph"
+                      net.protocol = "NetworkGraph"
+                      net.version = "NetworkGraph"
+                      net.revision = "NetworkGraph"
+                      net.metric = "NetworkGraph"
+
+                      var nodes = []
+                      var links = []
+
+                      nodes.push({"id":"00:00:00:00:00:00:00:01"})
+                      nodes.push({"id":"00:00:00:00:00:00:00:02"})
+                      nodes.push({"id":"00:00:00:00:00:00:00:03"})
+                      nodes.push({"id":"00:00:00:00:00:00:00:04"})
+
+                      for (var entity in switchNet) {
+                        //
+                         let link = {};
+                         link.source = switchNet[entity]["src-switch"]
+                         link.target = switchNet[entity]["dst-switch"]
+                         links.push(link);
+
+                      }
+
+                      for (var entity in data) {
+                        let node = {}
+                        let nodeproperties = {}
+
+                        node.id = data[entity].ipv6
+                        nodeproperties.mac = data[entity].mac
+
+                        if (data[entity].attachmentPoint.length >= 1) {
+                          nodeproperties.attachmentepoint = data[entity].attachmentPoint[0]["switchDPID"]
+                        }else {
+                          nodeproperties.attachmentepoint = data[entity].attachmentPoint
+                        }
+
+                        nodeproperties.lastSeen = data[entity].ipv6.lastSeen
+                        node.properties = nodeproperties
+                        nodes.push(node);
+
+
+                      }
+
+                      for (var entity in data) {
+                        let link = {}
+
+
+                        console.log(data[entity].attachmentPoint.length);
+                        console.log(data[entity].attachmentPoint);
+
+                        if (data[entity].attachmentPoint.length >= 1) {
+                          link.source = data[entity].ipv6
+                          link.target = data[entity].attachmentPoint[0]["switchDPID"]
+                        }else {
+                          link.source = data[entity].ipv6
+                          link.target = data[entity].ipv6
+                          //link.target = "00:00:00:00:00:00:00:01"
+                        }
+                        links.push(link)
+                      }
+
+
+                      net.nodes = nodes
+                      net.links = links
+                      d3.netJsonGraph(net,{el :"#topology-graph"});
+
+                    }
+                })
+            //  d3.netJsonGraph(net,{el :"#topology-graph"});
+
+            }
+        })
+
+        function unique(array) {
+
+      	var result = [];
+      	$.each(array, function(index, element) {
+      		if ($.inArray(element, result) == -1) {
+      			result.push(element);
+      		}
+      	});
+      	return result;
+      }
     </script>
   </body>
 </html>

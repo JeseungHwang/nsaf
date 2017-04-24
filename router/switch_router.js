@@ -1,29 +1,54 @@
 module.exports = function(app, fs, http)
 {
 	var basicOptions = {
-	    hostname: '192.168.56.104',
+	    hostname: '192.168.56.101',
 	    port: '8080',
 	    headers: {
 	    	'Content-Type' : 'application/json'
 	    }
 	};
-
-	/*app.get('/switch', function(req,res){
+	app.get('/topology', function(req,res){
         var result='';
         var restOptions = basicOptions;
         restOptions['method'] = 'GET';
-        restOptions['path'] = '/wm/core/controller/switches/json';
+        restOptions['path'] = '/wm/device/';
 
 		http.request(restOptions, function(response){
 			var str = '';
 			response.on('data', function (chunk) {
+
 				str += chunk;
 			});
 			response.on('end', function () {
+					//Parse..
+					console.log(str);
 			    res.json(JSON.parse(str));
 			});
 		}).end();
-    });*/
+
+
+	});
+	app.get('/topologyswitch', function(req,res){
+				var result='';
+				var restOptions = basicOptions;
+				restOptions['method'] = 'GET';
+				restOptions['path'] = '/wm/topology/links/json';
+
+		http.request(restOptions, function(response){
+			var str = '';
+			response.on('data', function (chunk) {
+
+				str += chunk;
+			});
+			response.on('end', function () {
+					//Parse..
+					console.log(str);
+					res.json(JSON.parse(str));
+			});
+		}).end();
+
+
+	});
 
 	app.get('/Switch', function(req,res){
         var result = [];
@@ -38,7 +63,7 @@ module.exports = function(app, fs, http)
 			});
 			response.on('end', function () {
 				result.push(JSON.parse(str));
-				
+
 				restOptions['path'] = '/wm/core/switch/all/port-desc/json';
 				http.request(restOptions, function(response){
 					var str = '';
@@ -47,7 +72,7 @@ module.exports = function(app, fs, http)
 					});
 					response.on('end', function () {
 						result.push(JSON.parse(str));
-						
+
 						restOptions['path'] = '/wm/core/controller/switches/json';
 						http.request(restOptions, function(response){
 							var str = '';
@@ -66,7 +91,7 @@ module.exports = function(app, fs, http)
 							});
 						}).end();
 					});
-				}).end();				
+				}).end();
 			});
 		}).end();
     });
