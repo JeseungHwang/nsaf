@@ -42,9 +42,7 @@
     d3._windowHeight = function() {
         return window.innerHeight || document.documentElement.clientHeight || 600;
     };
-    d3._windowWidth = function() {
-        return window.innerWidth || document.documentElement.clientWidth || 600;
-    };
+
     /**
       * @function
       *   @name d3._getPosition
@@ -106,7 +104,7 @@
         opts = d3._extend({
             el: "body",
             metadata: true,
-            defaultStyle: false,
+            defaultStyle: true,
             animationAtStart: true,
             scaleExtent: [0.25, 5],
             charge: -130,
@@ -171,7 +169,6 @@
              * Called on zoom and pan
              */
             redraw: function() {
-              d3.event.translate[0] = d3.event.translate[0]
                 panner.attr("transform",
                     "translate(" + d3.event.translate + ") " +
                     "scale(" + d3.event.scale + ")"
@@ -198,13 +195,22 @@
                     nodesMap[nodes[i].id] = i;
                 }
                 for(var c = 0; c < links_length; c++) {
+                    //var sourceIndex = nodesMap[links[c].source],
+                    //targetIndex = nodesMap[links[c].target];
                     var sourceIndex = nodesMap[links[c].source],
                     targetIndex = nodesMap[links[c].target];
                     // ensure source and target exist
+                    //if(!nodes[sourceIndex]) { throw("source '" + links[c].source + "' not found"); }
+                    //if(!nodes[targetIndex]) { throw("target '" + links[c].target + "' not found"); }
                     if(!nodes[sourceIndex]) { throw("source '" + links[c].source + "' not found"); }
-                    if(!nodes[targetIndex]) { throw("target '" + links[c].target + "' not found"); }
+                    if(!nodes[targetIndex]) { throw("source '" + links[c].target + "' not found"); }
                     links[c].source = nodesMap[links[c].source];
                     links[c].target = nodesMap[links[c].target];
+                    links[c].type = nodesMap[links[c].type];
+                    links[c].direction = nodesMap[links[c].direction];
+                    links[c].source_port = nodesMap[links[c].source_port];
+                    links[c].target_port = nodesMap[links[c].target_port];
+
                     // add link count to both ends
                     nodes[sourceIndex].linkCount++;
                     nodes[targetIndex].linkCount++;
@@ -249,8 +255,11 @@
                 var overlay = d3.select(".njg-overlay"),
                     overlayInner = d3.select(".njg-overlay > .njg-inner"),
                     html = "<p><b>source</b>: " + (l.source.label || l.source.id) + "</p>";
+                    // html += "<p><b>src_port</b>: " + l.src_port + "</p>";
                     html += "<p><b>target</b>: " + (l.target.label || l.target.id) + "</p>";
-                    html += "<p><b>cost</b>: " + l.cost + "</p>";
+                    //html += "<p><b>src_port</b>: " + l.dst_port + "</p>";
+                    //html += "<p><b>directional</b>: " + l.directional + "</p>";
+                    //html += "<p><b>type</b>: " + l.type + "</p>";
                 if(l.properties) {
                     for(var key in l.properties) {
                         if(!l.properties.hasOwnProperty(key)) { continue; }
@@ -281,7 +290,6 @@
                 body.style("height", d3._windowHeight() - rect.top - rect.bottom + "px");
             }
         }
-
         var el = d3.select(opts.el).style("position", "relative"),
             width = d3._pxToNumber(el.style('width')),
             height = d3._pxToNumber(el.style('height')),
@@ -297,17 +305,12 @@
                       .size([width, height]),
             zoom = d3.behavior.zoom().scaleExtent(opts.scaleExtent),
             // panner is the element that allows zooming and panning
-            //get width
-
-
             panner = el.append("svg")
-                       .attr("width", "100%")
-                       .attr("height", "100%")
+                       .attr("width", width)
+                       .attr("height", height)
                        .call(zoom.on("zoom", opts.redraw))
                        .append("g")
-                       .attr("transform","translate(0,0)")
                        .style("position", "absolute"),
-
             svg = d3.select(opts.el + " svg"),
             drag = force.drag(),
             overlay = d3.select(opts.el).append("div").attr("class", "njg-overlay"),

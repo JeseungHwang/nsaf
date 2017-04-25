@@ -1,7 +1,7 @@
 module.exports = function(app, fs, http)
 {
 	var basicOptions = {
-	    hostname: '192.168.56.101',
+	    hostname: '192.168.56.104',
 	    port: '8080',
 	    headers: {
 	    	'Content-Type' : 'application/json'

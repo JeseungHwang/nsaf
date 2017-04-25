@@ -261,81 +261,104 @@
                 })
                 .success(function(data, status, headers, config){
                     if(data){
+                      // http://192.168.56.104:8080/wm/device/ --> switchNet , http://192.168.56.104:8080/wm/topology/links/json --> data 에서 받아온 데이터들을 처리하는 구문
+                      console.log("switchNet :")
+                      console.log(switchNet);
+                      console.log("data : ");
                       console.log(data);
-                      net.type = "NetworkGraph"
-                      net.label = "NetworkGraph"
-                      net.protocol = "NetworkGraph"
-                      net.version = "NetworkGraph"
-                      net.revision = "NetworkGraph"
-                      net.metric = "NetworkGraph"
 
+                      //왼쪽 상단에 뜨는 팝업창.. 전체적인 네트워크를 description 하면 될것같다...
+                      net.type = "SDN Graph"
+                      net.label = "SDN Controller"
+                      net.protocol = "SDN Protocol"
+                      net.version = "1.0"
+                      net.revision = "1.101"
+                      net.metric = "None"
+
+                      var switchNodes = []
+                      var duplinodes = []
                       var nodes = []
                       var links = []
-
-                      nodes.push({"id":"00:00:00:00:00:00:00:01"})
-                      nodes.push({"id":"00:00:00:00:00:00:00:02"})
-                      nodes.push({"id":"00:00:00:00:00:00:00:03"})
-                      nodes.push({"id":"00:00:00:00:00:00:00:04"})
-
+                      //우선 연결하기 전에 노드 객체를 구현해 놔야한다.. switchNet에서 가져온 데이터들에서 src-switch, dst-switch의 값을을 추출한다.
                       for (var entity in switchNet) {
-                        //
-                         let link = {};
-                         link.source = switchNet[entity]["src-switch"]
-                         link.target = switchNet[entity]["dst-switch"]
-                         links.push(link);
+                        console.log(switchNet[entity]["src-switch"]);
+                        switchNodes.push(switchNet[entity]["src-switch"])
+                        switchNodes.push(switchNet[entity]["dst-switch"])
+                      }
+                      $.each(switchNodes, function(key, value){
+                        if($.inArray(value, duplinodes) === -1) duplinodes.push(value);
+                      });
 
+                      //중복된 노드를 제거한 배열을 추가한다
+                      for (var entity in duplinodes) {
+                        nodes.push({"id":duplinodes[entity]})
                       }
 
                       for (var entity in data) {
-                        let node = {}
-                        let nodeproperties = {}
+                         let node = {}
+                         let nodeproperties = {}
+                         node.id = data[entity].ipv4[0]
+                         nodeproperties.mac = data[entity].mac
+                         nodeproperties.lastSeen = timeConverter(data[entity].lastSeen)
+                         node.properties = nodeproperties
+                         nodes.push(node);
+                      }
 
-                        node.id = data[entity].ipv6
-                        nodeproperties.mac = data[entity].mac
-
-                        if (data[entity].attachmentPoint.length >= 1) {
-                          nodeproperties.attachmentepoint = data[entity].attachmentPoint[0]["switchDPID"]
-                        }else {
-                          nodeproperties.attachmentepoint = data[entity].attachmentPoint
-                        }
-
-                        nodeproperties.lastSeen = data[entity].ipv6.lastSeen
-                        node.properties = nodeproperties
-                        nodes.push(node);
-
-
+                      //연결된 노드들을 링크 객체를 통해 연결한다.
+                      for (var entity in switchNet) {
+                         let link = {};
+                         let linkproperties = {}
+                         link.source= switchNet[entity]["src-switch"]
+                         link.target= switchNet[entity]["dst-switch"]
+                         linkproperties.type = switchNet[entity]["type"]
+                         linkproperties.direction = switchNet[entity]["direction"]
+                         linkproperties.source_port = switchNet[entity]["src-port"]
+                         linkproperties.target_port = switchNet[entity]["dst-port"]
+                         link.properties = linkproperties
+                         /*
+                         link.source= switchNet[entity]["src-switch"]
+                         link.target= switchNet[entity]["dst-switch"]
+                         link.type= switchNet[entity]["type"]
+                         link.direction= switchNet[entity]["direction"]
+                         link.source_port= switchNet[entity]["scr-port"]
+                         link.target_port =switchNet[entity]["dst-port"]
+                         */
+                         links.push(link);
                       }
 
                       for (var entity in data) {
                         let link = {}
 
-
-                        console.log(data[entity].attachmentPoint.length);
-                        console.log(data[entity].attachmentPoint);
+                        let linkproperties = {}
 
                         if (data[entity].attachmentPoint.length >= 1) {
-                          link.source = data[entity].ipv6
+                          link.source = data[entity].ipv4[0]
                           link.target = data[entity].attachmentPoint[0]["switchDPID"]
-                        }else {
-                          link.source = data[entity].ipv6
-                          link.target = data[entity].ipv6
-                          //link.target = "00:00:00:00:00:00:00:01"
-                        }
-                        links.push(link)
-                      }
 
-
-                      net.nodes = nodes
-                      net.links = links
-                      d3.netJsonGraph(net,{el :"#topology-graph"});
-
+                         }
+                         links.push(link)
+                       }
+                       net.nodes = nodes
+                       net.links = links
+                       d3.netJsonGraph(net,{el :"#topology-graph"});
                     }
                 })
             //  d3.netJsonGraph(net,{el :"#topology-graph"});
 
             }
         })
-
+        function timeConverter(UNIX_timestamp){
+          var a = new Date(UNIX_timestamp * 1000);
+          var months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+          var year = a.getFullYear();
+          var month = months[a.getMonth()];
+          var date = a.getDate();
+          var hour = a.getHours();
+          var min = a.getMinutes();
+          var sec = a.getSeconds();
+          var time = hour + ':' + min + ':' + sec ;
+          return time;
+        }
         function unique(array) {
 
       	var result = [];
