@@ -276,10 +276,10 @@
               timeOut: 4000
             };
 
-            getHostInfo();
+            initHostInfo();
             $interval(getHostInfo, 5000);
 
-            function getHostInfo(){
+            function initHostInfo(){
                 $http({
                     method:'GET',
                     url:'http://localhost:8080/Host',
@@ -308,7 +308,6 @@
                             "State" : 'Disconnected',
                             "Connected Time" : timeStamp.format("20%y/%m/%d %H:%M:%S")
                           });
-                            toastr.error(value.ipv4, 'Host is Disconnected');
                         }
                       }
                     });
@@ -319,6 +318,71 @@
                 .error(function(data, status, headers, config){
                     console.log(status);
                 });
+            };
+
+            function getHostInfo(){
+              $http({
+                  method:'GET',
+                  url:'http://localhost:8080/Host',
+                  headers:{'Content-Type':'application/json; charset=utf-8'}
+              })
+              .success(function(data, status, headers, config){
+                if(data){
+                  var hostItemBackupList = [];
+                  angular.forEach(data, function(value, key) {
+                    if(value.ipv4.length != 0){
+                      var timeStamp = new Date(value.lastSeen/1000*1000);
+
+                      if(value.attachmentPoint.length != 0){  //Switch에 연결된 Host 들
+                        hostItemBackupList.push({
+                          "IPv4" : value.ipv4,
+                          "MAC Address" : value.mac,
+                          "Attache Swtich" : value.attachmentPoint[0].switchDPID,
+                          "State" : 'Connected',
+                          "Connected Time" : timeStamp.format("20%y/%m/%d %H:%M:%S")
+                        });  
+                      }
+                    }
+                  });
+
+                  angular.forEach($scope.hostGridOpts.data, function(val_1, key) {
+                    if(JSON.stringify(hostItemBackupList).indexOf(val_1['IPv4']) == -1){  //모니터링 호스트 목록에 새로 받아온 호스트 IP 가 없을때
+                      val_1['State'] = 'Disconnected';
+                      toastr.error(val_1['IPv4'], 'Host is Disconnected');
+                    }else{
+                      angular.forEach(hostItemBackupList, function(val_2, key) {
+                        if(val_1['IPv4'][0] == val_2['IPv4'][0]){ //기존 데이터와 새로 받은 데이터의 IPv4가 같은거일 경우 새로운 데이터 반영
+                          if((val_1['State'] == 'Disconnected') && (val_2['State'] == 'Connected')){
+                            toastr.success(val_2['IPv4'], 'Host is Reconnected');
+                          }
+                          val_1['MAC Address'] = val_2['MAC Address'];
+                          val_1['Attache Swtich'] = val_2['Attache Swtich'];
+                          val_1['State'] = val_2['State'];
+                          val_1['Connected Time'] = val_2['Connected Time'];
+                          return 0;
+                        }else{
+                          if(JSON.stringify($scope.hostGridOpts.data).indexOf(val_2['IPv4']) == -1){  //새로운 Host 추가
+                            toastr.success(val_2['IPv4'], 'Host is Connected');
+                            $scope.hostGridOpts.data.push({
+                              "IPv4" : val_2['IPv4'],
+                              "MAC Address" : val_2['MAC Address'],
+                              "Attache Swtich" : val_2['Attache Swtich'],
+                              "State" : 'Connected',
+                              "Connected Time" : val_2['Connected Time']
+                            });
+                            return 0;
+                          }
+                        }
+                      });
+                    }
+                  });
+                }else{
+                    console.log("No data");
+                }
+              })
+              .error(function(data, status, headers, config){
+                  console.log(status);
+              });
             };
         });
     </script>
