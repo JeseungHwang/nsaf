@@ -46,6 +46,7 @@ module.exports = function(app, fs, http, Log)
 
 
 	function initPopulation(topoMatrix){
+		var cnt = 0;
 		var startPoint = 4;
 		var prePoint = startPoint;
 		var endPoint = 8;
@@ -71,6 +72,14 @@ module.exports = function(app, fs, http, Log)
 				prePoint = startPoint;
 				isVisited = [];
 			}
+			cnt++;
+			if(cnt >50){	//무한 루프 막기위한 방법으로 강제 초기화 
+				visitPath = [];
+				visitPath.push(startPoint);
+				prePoint = startPoint;
+				isVisited = [];
+				cnt = 0;
+			}
 		}
 		return visitPath;
 	}
@@ -90,16 +99,44 @@ module.exports = function(app, fs, http, Log)
 	}
 
 	function calculateFitness(genes, qos, appReq){
-		console.log(genes);
-		/*console.log(genes[0].length);
-		console.log(genes[0][0]+","+genes[0][1]);
-		console.log(qos[0][0][1]);*/
+		var fitness_totalscore = new Array();
 		for(var i=0; i<genes.length; i++){
+			var bandwidth_fitness = 0;
+			var delay_fitness = 0;
+			var jitter_fitness = 0;
+			var packetloss_fitness = 0;
 			for(var j=0; j<genes[i].length-1;j++){
-				//console.log(genes[i][j] +","+genes[i][j+1]);
-				//console.log(qos[0][genes[i][j]-1][genes[i][j+1]-1]);
+				var x = genes[i][j];
+				var y = genes[i][j+1];
+				if(appReq[0].bandwidth <= qos[0][x][y]){
+					bandwidth_fitness++;
+				}else{
+					bandwidth_fitness--;
+				}
+				if(appReq[0].jitter <= qos[1][x][y]){
+					jitter_fitness++;
+				}else{
+					jitter_fitness--;
+				}
+				if(appReq[0].delay <= qos[2][x][y]){
+					delay_fitness++;
+				}else{
+					delay_fitness--;
+				}
+				if(appReq[0].packetloss <= qos[3][x][y]){
+					packetloss_fitness++;
+				}else{
+					packetloss_fitness--;
+				}
 			}
+			fitness_totalscore.push({
+				"bandwidth" : bandwidth_fitness,
+				"delay" : delay_fitness,
+				"jitter" : jitter_fitness,
+				"packetloss" : packetloss_fitness
+			});
 		}
+		return fitness_totalscore;
 	}
 
 	function isExistGene(genes, initGene){
@@ -120,6 +157,30 @@ module.exports = function(app, fs, http, Log)
 		}
 	}
 
+	function crossOver(path1, path2){
+		console.log("CrossOver");
+		console.log(path1);
+		console.log(path2);
+		for(var i=1; i<path1.length-1; i++){
+			for(var j=1; j<path2.length-1; j++){
+				if(path1[i] == path2[j]){
+					console.log("CrossOver Point : "+i+","+j);	
+					var str1 = path1.slice(0,i);
+					var str2 = path1.slice(i,path1.length);
+
+					var str3 = path2.slice(0,j);
+					var str4 = path2.slice(j,path1.length);
+
+
+					/*console.log(str1.concat(str4));
+					console.log(str3.concat(str2));*/
+					console.log(path1.slice(0,i).concat(path2.slice(j,path1.length)));
+					console.log(path2.slice(0,j).concat(path1.slice(i,path1.length)));
+				}
+			}
+		}
+	}
+
 	function existCheckGene(ge) {
 	    return ge > 0;
 	}
@@ -133,26 +194,32 @@ module.exports = function(app, fs, http, Log)
 		var delay_matrix = setQoSMatrix(allTopologyInfo, switchCnt, 'delay');
 		var packetloss_matrix = setQoSMatrix(allTopologyInfo, switchCnt, 'packetloss');
 		var QoS_matrix = [];
-		/*QoS_matrix.push(bandwidth_matrix);
+		QoS_matrix.push(bandwidth_matrix);
 		QoS_matrix.push(jitter_matrix);
 		QoS_matrix.push(delay_matrix);
-		QoS_matrix.push(packetloss_matrix);*/
+		QoS_matrix.push(packetloss_matrix);
 		var genes = [];
-		while(genes.length < 5){
+		var geneCnt =0;
+		while(genes.length < 4){
 			var initGene = initPopulation(topoMatrix);
 			if(!isExistGene(genes, initGene)){
 				genes.push(initGene);
+				geneCnt++;
 			}
 		}
-		//console.log(genes);
+
+		console.log("total Count :"+geneCnt);
+		console.log(genes);
 		var appRequirement=[];
 		appRequirement.push({
-			"bandwidth":100,
-			"delay":0.5,
+			"bandwidth":80,
+			"delay":0.3,
 			"jitter":0.4,
 			"packetloss":10
 		});
-		calculateFitness(genes, QoS_matrix,appRequirement);
+		var fittness_score = calculateFitness(genes, QoS_matrix,appRequirement);
+		console.log(fittness_score);
+		crossOver(genes[0], genes[1]);
 		res.json("ho");
 	});
 }
