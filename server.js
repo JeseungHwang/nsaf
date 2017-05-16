@@ -49,6 +49,7 @@ var r_switch = require('./router/switch_router')(app, fs, http);
 var r_host = require('./router/host_router')(app, fs, http);
 var r_logging = require('./router/logging_router')(app, fs, http, Log);
 var r_optimumpath = require('./router/optimumpath_router')(app, fs, http);
+var r_dijkstra = require('./router/dijkstra')(app, fs, http);
 
 //Server 시작
 var server = app.listen(8080, function(){
