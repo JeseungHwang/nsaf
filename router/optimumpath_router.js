@@ -13,6 +13,7 @@ module.exports = function(app, fs, http, Log)
 		var delay_matrix = setQoSMatrix(allTopologyInfo, switchCnt, 'delay');
 		var packetloss_matrix = setQoSMatrix(allTopologyInfo, switchCnt, 'packetloss');
 		var QoS_matrix = [];
+		console.log(bandwidth_matrix);
 		QoS_matrix.push(bandwidth_matrix);
 		QoS_matrix.push(jitter_matrix);
 		QoS_matrix.push(delay_matrix);
@@ -37,7 +38,7 @@ module.exports = function(app, fs, http, Log)
 			console.log("gene make : "+initGene);
 		}
 		console.log(chromosomes);
-		
+
 		var selection_paths = selection(chromosomes, QoS_matrix, appRequirement);
 		var offspring_path = [];
 		console.log(selection_paths);
@@ -65,7 +66,7 @@ module.exports = function(app, fs, http, Log)
 						offspring_path.push(mutation_path);
 						break;
 					}
-				}	
+				}
 			}
 		}
 
@@ -108,7 +109,7 @@ module.exports = function(app, fs, http, Log)
 							offspring_path.push(mutation_path);
 							break;
 						}
-					}	
+					}
 				}
 			}
 		}
@@ -192,7 +193,7 @@ module.exports = function(app, fs, http, Log)
 				isVisited = [];
 			}
 			cnt++;
-			if(cnt >50){	//무한 루프 막기위한 방법으로 강제 초기화 
+			if(cnt >50){	//무한 루프 막기위한 방법으로 강제 초기화
 				visitPath = [];
 				visitPath.push(startPoint);
 				prePoint = startPoint;
@@ -247,11 +248,11 @@ module.exports = function(app, fs, http, Log)
 						var pre_i = Number(cross_point[cross_pointSize-1].i);
 						var pre_j = cross_point[cross_pointSize-1].j;
 						if((pre_i < i) && (pre_j < j)){
-							cross_point.push({i,j});	
+							cross_point.push({i,j});
 							cross_pointSize++;
-						}	
+						}
 					}else{
-						cross_point.push({i,j});	
+						cross_point.push({i,j});
 						cross_pointSize++;
 					}
 				}
@@ -265,12 +266,12 @@ module.exports = function(app, fs, http, Log)
 			var y1 = cross_point[position].j;
 			var convert_path1 = path1.slice(0,x1).concat(path2.slice(y1,path2.length));
 			var convert_path2 = path2.slice(0,y1).concat(path1.slice(x1,path1.length));
-			
+
 			if(!isSamePath(path1, convert_path1)){
 				offspring_path.push(convert_path1);
 			}
 			if(!isSamePath(path2, convert_path2)){
-				offspring_path.push(convert_path2);	
+				offspring_path.push(convert_path2);
 			}
 		}
 		return offspring_path;
@@ -333,14 +334,14 @@ module.exports = function(app, fs, http, Log)
 						prePoint = candidateNode[position];
 						cnt = 0;
 					}else{
-						cnt++;	
+						cnt++;
 					}
 				}else{
-					cnt++;	
+					cnt++;
 				}
 				if(cnt > 50){
 					startPoint = Math.floor(Math.random() * path_len + 1);
-					endPoint = Math.floor(Math.random() * (path_len/2) + 1) + Math.floor(path_len/2);	
+					endPoint = Math.floor(Math.random() * (path_len/2) + 1) + Math.floor(path_len/2);
 					while(true){
 						if(startPoint == endPoint){
 							startPoint = Math.floor(Math.random() * (path_len/2) + 1);
