@@ -78,7 +78,7 @@
                       <li><a href="#">>Table Dynamic</a></li>
                     </ul>
                   </li>
-              
+
                 </ul>
               </div> -->
               <div class="menu_section">
@@ -267,7 +267,7 @@
             var switchItemList = [];
             $scope.switchGridOpts = {
                 columnDefs: switchColumnDef,
-                enableRowSelection: true, 
+                enableRowSelection: true,
                 enableRowHeaderSelection: false,
                 data: switchItemList
             };
@@ -291,6 +291,7 @@
                     if(data){
                       var data_len = Object.keys(data[0]).length;
                       $scope.switchGridOpts.data = [];
+                      //$scope.gridApi.selection.on.rowSelectionChanged($scope, function(row){});
                       for(var i=0;i<data_len;i++){
                         var timeStamp = new Date((data[2][Object.keys(data[1])[i]]['connectedSince'])/1000*1000);
                         $scope.switchGridOpts.data.push({

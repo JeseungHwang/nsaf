@@ -1,0 +1,644 @@
+{
+  "node" : [
+    {
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:01",
+      "dst" : "00:00:00:00:00:00:00:02",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:01",
+      "dst" : "00:00:00:00:00:00:00:03",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:01",
+      "dst" : "00:00:00:00:00:00:00:04",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:01",
+      "dst" : "00:00:00:00:00:00:00:10",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:02",
+      "dst" : "00:00:00:00:00:00:00:01",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:02",
+      "dst" : "00:00:00:00:00:00:00:04",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:02",
+      "dst" : "00:00:00:00:00:00:00:05",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:03",
+      "dst" : "00:00:00:00:00:00:00:01",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:03",
+      "dst" : "00:00:00:00:00:00:00:04",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:03",
+      "dst" : "00:00:00:00:00:00:00:07",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:03",
+      "dst" : "00:00:00:00:00:00:00:08",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:03",
+      "dst" : "00:00:00:00:00:00:00:09",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:04",
+      "dst" : "00:00:00:00:00:00:00:02",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:04",
+      "dst" : "00:00:00:00:00:00:00:03",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:04",
+      "dst" : "00:00:00:00:00:00:00:05",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:04",
+      "dst" : "00:00:00:00:00:00:00:06",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:05",
+      "dst" : "00:00:00:00:00:00:00:02",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:05",
+      "dst" : "00:00:00:00:00:00:00:04",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:05",
+      "dst" : "00:00:00:00:00:00:00:06",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:06",
+      "dst" : "00:00:00:00:00:00:00:04",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:06",
+      "dst" : "00:00:00:00:00:00:00:05",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:06",
+      "dst" : "00:00:00:00:00:00:00:07",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:06",
+      "dst" : "00:00:00:00:00:00:00:10",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:07",
+      "dst" : "00:00:00:00:00:00:00:03",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:07",
+      "dst" : "00:00:00:00:00:00:00:06",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:07",
+      "dst" : "00:00:00:00:00:00:00:10",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:08",
+      "dst" : "00:00:00:00:00:00:00:03",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:08",
+      "dst" : "00:00:00:00:00:00:00:09",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:08",
+      "dst" : "00:00:00:00:00:00:00:10",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:08",
+      "dst" : "00:00:00:00:00:00:00:18",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:08",
+      "dst" : "00:00:00:00:00:00:00:19",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:09",
+      "dst" : "00:00:00:00:00:00:00:03",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:09",
+      "dst" : "00:00:00:00:00:00:00:08",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:09",
+      "dst" : "00:00:00:00:00:00:00:10",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:09",
+      "dst" : "00:00:00:00:00:00:00:13",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:09",
+      "dst" : "00:00:00:00:00:00:00:18",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:10",
+      "dst" : "00:00:00:00:00:00:00:06",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:10",
+      "dst" : "00:00:00:00:00:00:00:07",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:10",
+      "dst" : "00:00:00:00:00:00:00:09",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:10",
+      "dst" : "00:00:00:00:00:00:00:11",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:11",
+      "dst" : "00:00:00:00:00:00:00:10",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:11",
+      "dst" : "00:00:00:00:00:00:00:12",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:11",
+      "dst" : "00:00:00:00:00:00:00:13",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:12",
+      "dst" : "00:00:00:00:00:00:00:11",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:12",
+      "dst" : "00:00:00:00:00:00:00:13",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:12",
+      "dst" : "00:00:00:00:00:00:00:14",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:12",
+      "dst" : "00:00:00:00:00:00:00:15",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:13",
+      "dst" : "00:00:00:00:00:00:00:09",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:13",
+      "dst" : "00:00:00:00:00:00:00:11",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:13",
+      "dst" : "00:00:00:00:00:00:00:12",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:13",
+      "dst" : "00:00:00:00:00:00:00:14",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:14",
+      "dst" : "00:00:00:00:00:00:00:12",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:14",
+      "dst" : "00:00:00:00:00:00:00:13",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:14",
+      "dst" : "00:00:00:00:00:00:00:18",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:14",
+      "dst" : "00:00:00:00:00:00:00:19",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:15",
+      "dst" : "00:00:00:00:00:00:00:12",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:15",
+      "dst" : "00:00:00:00:00:00:00:16",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:15",
+      "dst" : "00:00:00:00:00:00:00:17",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:15",
+      "dst" : "00:00:00:00:00:00:00:20",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:16",
+      "dst" : "00:00:00:00:00:00:00:15",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:17",
+      "dst" : "00:00:00:00:00:00:00:15",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:17",
+      "dst" : "00:00:00:00:00:00:00:18",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:18",
+      "dst" : "00:00:00:00:00:00:00:08",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:18",
+      "dst" : "00:00:00:00:00:00:00:09",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:18",
+      "dst" : "00:00:00:00:00:00:00:14",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:18",
+      "dst" : "00:00:00:00:00:00:00:17",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.2",
+      "jitter" : "0.2",
+      "packetloss" : "5"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:19",
+      "dst" : "00:00:00:00:00:00:00:08",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:19",
+      "dst" : "00:00:00:00:00:00:00:14",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:19",
+      "dst" : "00:00:00:00:00:00:00:20",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:20",
+      "dst" : "00:00:00:00:00:00:00:19",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    },{
+      "name" : "S1",
+      "switchDPID" : "00:00:00:00:00:00:00:20",
+      "dst" : "00:00:00:00:00:00:00:15",
+      "port" : "1",
+      "bandwidth" : "100",
+      "delay" : "0.5",
+      "jitter" : "0.4",
+      "packetloss" : "10"
+    }
+  ]
+}

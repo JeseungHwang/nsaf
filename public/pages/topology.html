@@ -295,13 +295,19 @@
                       }
 
                       for (var entity in data) {
-                         let node = {}
-                         let nodeproperties = {}
-                         node.id = data[entity].ipv4[0]
-                         nodeproperties.mac = data[entity].mac
-                         nodeproperties.lastSeen = timeConverter(data[entity].lastSeen)
-                         node.properties = nodeproperties
-                         nodes.push(node);
+                        if (data[entity].ipv4.length === 1){
+                          let node = {}
+                          let nodeproperties = {}
+                          node.id = data[entity].ipv4[0]
+                          nodeproperties.mac = data[entity].mac
+                          nodeproperties.lastSeen = timeConverter(data[entity].lastSeen)
+                          node.properties = nodeproperties
+                          nodes.push(node);
+                        }
+                        //
+                        // }else{
+
+                        //}
                       }
 
                       //연결된 노드들을 링크 객체를 통해 연결한다.
@@ -327,6 +333,8 @@
                       }
 
                       for (var entity in data) {
+                        if (data[entity].ipv4.length === 1){
+
                         let link = {}
 
                         let linkproperties = {}
@@ -337,10 +345,12 @@
 
                          }
                          links.push(link)
+                        }
                        }
                        net.nodes = nodes
                        net.links = links
                        d3.netJsonGraph(net,{el :"#topology-graph"});
+
                     }
                 })
             //  d3.netJsonGraph(net,{el :"#topology-graph"});

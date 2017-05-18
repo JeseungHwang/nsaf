@@ -28,6 +28,27 @@ module.exports = function(app, fs, http)
 
 
 	});
+	app.get('/flow', function(req,res){
+        var result='';
+        var restOptions = basicOptions;
+        restOptions['method'] = 'GET';
+        restOptions['path'] = '/wm/core/switch/'+req.query.hostSwitch+'/flow/json';
+				console.log(req.query.hostSwitch);
+		http.request(restOptions, function(response){
+			var str = '';
+			response.on('data', function (chunk) {
+
+				str += chunk;
+			});
+			response.on('end', function () {
+					//Parse..
+					console.log(str);
+			    res.json(JSON.parse(str));
+			});
+		}).end();
+
+
+	});
 	app.get('/topologyswitch', function(req,res){
 				var result='';
 				var restOptions = basicOptions;
@@ -42,7 +63,7 @@ module.exports = function(app, fs, http)
 			});
 			response.on('end', function () {
 					//Parse..
-					console.log(str);
+					//console.log(str);
 					res.json(JSON.parse(str));
 			});
 		}).end();
