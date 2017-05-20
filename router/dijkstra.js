@@ -5,7 +5,7 @@ module.exports = function(app, fs, http, Log)
 	app.post('/path/dijkstra', function(req,res){
 		console.time('optimum');
 		var allTopologyInfo = req.body['node'];
-		var switchCnt = 20;
+		var switchCnt = 110;
 		var topoMatrix = setTopologyMatrix(allTopologyInfo.slice(0), switchCnt);
 		var bandwidth_matrix = setQoSMatrix(allTopologyInfo, switchCnt, 'bandwidth');
 		var jitter_matrix = setQoSMatrix(allTopologyInfo, switchCnt, 'jitter');
@@ -25,21 +25,20 @@ module.exports = function(app, fs, http, Log)
 		 	"jitter":0.4,
 		 	"packetloss":10
 		 });
-		var startPoint = 6;
-		var endPoint = 14;
+		var startPoint = 4;
+		var endPoint = 60;
 		//Dikstra 함수... bandwidth_matrix, jitter_matrix, delay_matrix, packetloss_matrix 중 하나만 삽입
 
-		dikstra(bandwidth_matrix, startPoint, endPoint);
+		dikstra(delay_matrix, startPoint, endPoint, switchCnt);
 		res.json(resStr);
 	});
 
-	function dikstra(graph, startPoint, endPoint){
+	function dikstra(graph, startPoint, endPoint, switchCnt){
 		var inf = 99999;
 		var isVisits = [];
 		var distance = [];
 		var historyPath = [];
 
-		var switchCnt = 20;
 		var nextVertex = startPoint;
 		var min = 0;
 

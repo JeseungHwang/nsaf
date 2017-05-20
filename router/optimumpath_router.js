@@ -6,14 +6,16 @@ module.exports = function(app, fs, http, Log)
 		console.time('optimum');
 		var generation = 1;
 		var allTopologyInfo = req.body['node'];
-		var switchCnt = 20;
+		var switchCnt = 40;
+		var startPoint = 2;
+		var endPoint = 38;
 		var topoMatrix = setTopologyMatrix(allTopologyInfo.slice(0), switchCnt);
 		var bandwidth_matrix = setQoSMatrix(allTopologyInfo, switchCnt, 'bandwidth');
 		var jitter_matrix = setQoSMatrix(allTopologyInfo, switchCnt, 'jitter');
 		var delay_matrix = setQoSMatrix(allTopologyInfo, switchCnt, 'delay');
 		var packetloss_matrix = setQoSMatrix(allTopologyInfo, switchCnt, 'packetloss');
 		var QoS_matrix = [];
-		console.log(bandwidth_matrix);
+
 		QoS_matrix.push(bandwidth_matrix);
 		QoS_matrix.push(jitter_matrix);
 		QoS_matrix.push(delay_matrix);
@@ -24,24 +26,24 @@ module.exports = function(app, fs, http, Log)
 		var appRequirement=[];
 		appRequirement.push({
 			"bandwidth":80,
-			"delay":0.3,
-			"jitter":0.4,
+			"delay":10,
+			"jitter":10,
 			"packetloss":10
 		});
 
-		while(chromosomes.length < 10){
-			var initGene = initPopulation(topoMatrix);
+		while(chromosomes.length < 20){
+			var initGene = initPopulation(startPoint, endPoint, topoMatrix, switchCnt);
 			if(!isExistGene(chromosomes, initGene)){
 				chromosomes.push(initGene);
 				geneCnt++;
 			}
 			console.log("gene make : "+initGene);
 		}
-		console.log(chromosomes);
+		//console.log(chromosomes);
 
 		var selection_paths = selection(chromosomes, QoS_matrix, appRequirement);
 		var offspring_path = [];
-		console.log(selection_paths);
+		//console.log(selection_paths);
 		for(var i=0; i<selection_paths.length; i++){
 			offspring_path.push(selection_paths[i].path);
 		}
@@ -165,17 +167,16 @@ module.exports = function(app, fs, http, Log)
 	}
 
 
-	function initPopulation(topoMatrix){
+	function initPopulation(startPoint, endPoint, topoMatrix, switchCnt){
 		var cnt = 0;
 		var initAllPath = topoMatrix.slice(0);
-		var startPoint = 4;
 		var prePoint = startPoint;
-		var endPoint = 14;
 		var visitPath = new Array();
 		visitPath.push(startPoint);
 		var isVisited = new Array();
 		while(visitPath.indexOf(endPoint) == -1){
-			var position = Math.floor(Math.random() * 20);
+			console.log(visitPath);
+			var position = Math.floor(Math.random() * switchCnt);
 			if(initAllPath[prePoint][position] == 1){	//난수 번호의 토폴로지가 연결되어 있는지
 				if(visitPath.indexOf(position) == -1){	//생성하는 경로에 아직 추가안된 부분이라면 추가
 					visitPath.push(position);
@@ -193,7 +194,7 @@ module.exports = function(app, fs, http, Log)
 				isVisited = [];
 			}
 			cnt++;
-			if(cnt >50){	//무한 루프 막기위한 방법으로 강제 초기화
+			if(cnt >1000){	//무한 루프 막기위한 방법으로 강제 초기화
 				visitPath = [];
 				visitPath.push(startPoint);
 				prePoint = startPoint;
@@ -286,13 +287,15 @@ module.exports = function(app, fs, http, Log)
 		var allPath = topoMatrix.slice(0);
 		var path_len = path.length-2;
 		console.log(path);
-		var startPoint = Math.floor(Math.random() * (path_len/2) + 1);
-		var endPoint = Math.floor(Math.random() * (path_len/2) + 1) + Math.floor(path_len/2);
+		var startPoint;
+		var endPoint;
 		while(true){
-			if(startPoint == endPoint){
-				startPoint = Math.floor(Math.random() * (path_len/2) + 1);
-				endPoint = Math.floor(Math.random() * (path_len/2) + 1) + Math.floor(path_len/2);
-			}else if(startPoint < endPoint){
+			startPoint = Math.floor(Math.random() * path_len + 1);
+			endPoint = Math.floor(Math.random() * path_len + 1);
+			if((startPoint == endPoint) || (endPoint-startPoint == 1)){
+				startPoint = Math.floor(Math.random() * path_len + 1);
+				endPoint = Math.floor(Math.random() * path_len + 1);
+			}else if(startPoint > endPoint){
 				var temp = endPoint;
 				endPoint = startPoint;
 				startPoint = temp;
@@ -316,8 +319,6 @@ module.exports = function(app, fs, http, Log)
 			if(allPath[prePoint][path[endPoint]] == 1){
 				break;
 			}
-
-
 			var candidateNode = [];
 			for(var i=0; i<allPath.length; i++){
 				if(allPath[prePoint][i] == 1){
@@ -339,14 +340,14 @@ module.exports = function(app, fs, http, Log)
 				}else{
 					cnt++;
 				}
-				if(cnt > 50){
-					startPoint = Math.floor(Math.random() * path_len + 1);
-					endPoint = Math.floor(Math.random() * (path_len/2) + 1) + Math.floor(path_len/2);
+				if(cnt > 1000){
 					while(true){
-						if(startPoint == endPoint){
-							startPoint = Math.floor(Math.random() * (path_len/2) + 1);
-							endPoint = Math.floor(Math.random() * (path_len/2) + 1) + Math.floor(path_len/2);
-						}else if(startPoint < endPoint){
+						startPoint = Math.floor(Math.random() * path_len + 1);
+						endPoint = Math.floor(Math.random() * path_len + 1);
+						if((startPoint == endPoint) || (endPoint-startPoint == 1)){
+							startPoint = Math.floor(Math.random() * path_len + 1);
+							endPoint = Math.floor(Math.random() * path_len + 1);
+						}else if(startPoint > endPoint){
 							var temp = endPoint;
 							endPoint = startPoint;
 							startPoint = temp;
@@ -367,13 +368,13 @@ module.exports = function(app, fs, http, Log)
 					}
 				}
 			}else{
-				startPoint = Math.floor(Math.random() * path_len + 1);
-				endPoint = Math.floor(Math.random() * (path_len/2) + 1) + Math.floor(path_len/2);
 				while(true){
-					if(startPoint == endPoint){
-						startPoint = Math.floor(Math.random() * (path_len/2) + 1);
-						endPoint = Math.floor(Math.random() * (path_len/2) + 1) + Math.floor(path_len/2);
-					}else if(startPoint < endPoint){
+					startPoint = Math.floor(Math.random() * path_len + 1);
+					endPoint = Math.floor(Math.random() * path_len + 1);
+					if((startPoint == endPoint) || (endPoint-startPoint == 1)){
+						startPoint = Math.floor(Math.random() * path_len + 1);
+						endPoint = Math.floor(Math.random() * path_len + 1);
+					}else if(startPoint > endPoint){
 						var temp = endPoint;
 						endPoint = startPoint;
 						startPoint = temp;
@@ -418,31 +419,43 @@ module.exports = function(app, fs, http, Log)
 		var selection_result = new Array();
 		for(var i=0; i<chmos.length; i++){
 			var bandwidth_fitness = 0;
+			var bandwidth_arr = [];
 			var delay_fitness = 0;
+			var delay_arr = [];
 			var jitter_fitness = 0;
+			var jitter_arr = [];
 			var packetloss_fitness = 0;
-			for(var j=0; j<chmos[i].length-1;j++){
+			var packetloss_arr = [];
+			for(var j=0; j<chmos[i].length;j++){
 				var x = chmos[i][j];
 				var y = chmos[i][j+1];
 				if(appReq[0].bandwidth <= qos[0][x][y]){
-					bandwidth_fitness++;
+					bandwidth_fitness+=1;
+					bandwidth_arr.push(qos[0][x][y]);
 				}else{
-					bandwidth_fitness--;
+					bandwidth_fitness-=1;
+					bandwidth_arr.push(qos[0][x][y]);
 				}
 				if(appReq[0].jitter <= qos[1][x][y]){
-					jitter_fitness++;
+					jitter_fitness+=1;
+					jitter_arr.push(qos[1][x][y]);
 				}else{
-					jitter_fitness--;
+					jitter_fitness-=1;
+					jitter_arr.push(qos[1][x][y]);
 				}
 				if(appReq[0].delay <= qos[2][x][y]){
-					delay_fitness++;
+					delay_fitness+=1;
+					delay_arr.push(qos[2][x][y]);
 				}else{
-					delay_fitness--;
+					delay_fitness-=1;
+					delay_arr.push(qos[2][x][y]);
 				}
 				if(appReq[0].packetloss <= qos[3][x][y]){
-					packetloss_fitness++;
+					packetloss_fitness+=1;
+					packetloss_arr.push(qos[3][x][y]);
 				}else{
-					packetloss_fitness--;
+					packetloss_fitness-=1;
+					packetloss_arr.push(qos[3][x][y]);
 				}
 			}
 			bandwidth_fitness /= chmos.length;
@@ -458,11 +471,15 @@ module.exports = function(app, fs, http, Log)
 				"jitter" : jitter_fitness,
 				"packetloss" : packetloss_fitness,
 				"total" : (bandwidth_fitness+delay_fitness+jitter_fitness+packetloss_fitness),
+				"bandwidth_value" : bandwidth_arr,
+				"jitter_value" : jitter_arr,
+				"packetloss_value" : packetloss_arr,
+				"delay_value" : delay_arr,
 				"rank" : 1
 			});
 		}
 
-		console.log(selection_result);
+		//console.log(selection_result);
 
 		for(var i=0; i<chmos.length; i++){
 			for(var j=0; j<chmos.length; j++){
@@ -483,7 +500,7 @@ module.exports = function(app, fs, http, Log)
 	}
 
 	function fitness(offspring_path){
-		if(offspring_path.total >= 4){
+		if(offspring_path.total >= 2){
 			return true;
 		}
 		return false;
