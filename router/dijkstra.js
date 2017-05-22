@@ -3,7 +3,7 @@ module.exports = function(app, fs, http, Log)
 	var math = require('mathjs');
 	var moment = require('moment');
 	var resStr = "";
-	var switchCnt = 40;
+	var switchCnt = 30;
 	app.post('/path/dijkstra', function(req,res){
 		console.time('optimum');
 		var allTopologyInfo = req.body['node'];
@@ -27,11 +27,15 @@ module.exports = function(app, fs, http, Log)
 		 	"jitter":0.4,
 		 	"packetloss":10
 		 });
-		var startPoint = 5;
+		var startPoint = 8;
 		var endPoint = 14;
 		//Dikstra 함수... bandwidth_matrix, jitter_matrix, delay_matrix, packetloss_matrix 중 하나만 삽입
-		console.log(QoSMatrix(bandwidth_matrix,jitter_matrix,delay_matrix,packetloss_matrix));
-		dikstra(QoSMatrix(bandwidth_matrix,jitter_matrix,delay_matrix,packetloss_matrix), startPoint, endPoint);
+		console.log('QOS');
+		var Qos = QoSMatrix(bandwidth_matrix,jitter_matrix,delay_matrix,packetloss_matrix)
+		console.log(Qos)
+		console.log('QOS');
+		//console.log(bandwidth_matrix);
+		dikstra(Qos, startPoint, endPoint);
 		res.json(resStr);
 	});
 	//이건 Bandwith , jitter, delay, packetloss의 Weight를 주어 4가지 QoS를 고려한 QoSArraY를 생성하는 함수입니다..
@@ -95,12 +99,12 @@ module.exports = function(app, fs, http, Log)
 
 				if(bandwidth_matrix[i][j] != 99999){
 					//계산공식 (각 표본값 - 평균 / 표준편차 )
-					var pushData = 	((bandwidth_matrix[i][j]-bAvg)/bStd*bWeight) +
-													((jitter_matrix[i][j]-jAvg)/jStd*jWeight) +
-													((delay_matrix[i][j]-dAvg)/dStd*dWeight) +
-													((packetloss_matrix[i][j]-pAvg)/pStd*pWeight)
+					var pushData = 	math.square(((bandwidth_matrix[i][j]-bAvg)/bStd*bWeight)) +
+													math.square(((jitter_matrix[i][j]-jAvg)/jStd*jWeight)) +
+													math.square(((delay_matrix[i][j]-dAvg)/dStd*dWeight)) +
+													math.square(((packetloss_matrix[i][j]-pAvg)/pStd*pWeight))
 					//tempAry.push(pushData)
-					QosArray[i][j] = pushData
+					QosArray[i][j] = parseFloat(pushData.toFixed(3));
 				}else {
 					QosArray[i][j] = 99999
 					//tempAry.push(9999)
@@ -109,7 +113,7 @@ module.exports = function(app, fs, http, Log)
 			//QosArray.push(QosArray)
 		}
 		//구현된 QosArray
-		console.log(QosArray[0][0]);
+		//console.log(QosArray);
 		return QosArray;
 
 
@@ -159,7 +163,7 @@ module.exports = function(app, fs, http, Log)
 		resStr += '최단거리 : '+distance[endPoint]+' '
 		console.log(startPoint+'부터 도착점 :'+endPoint);
 		console.log('최단거리 : '+distance[endPoint]);
-
+		//console.log(historyPath);
 		console.timeEnd('optimum');
 
 		printPath(historyPath, startPoint, endPoint)
