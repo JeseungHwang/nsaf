@@ -27,6 +27,7 @@ module.exports = function(app, fs, http, Log)
 		 	"jitter":0.4,
 		 	"packetloss":10
 		 });
+
 		var startPoint = 8;
 		var endPoint = 14;
 		//Dikstra 함수... bandwidth_matrix, jitter_matrix, delay_matrix, packetloss_matrix 중 하나만 삽입
@@ -36,6 +37,7 @@ module.exports = function(app, fs, http, Log)
 		console.log('QOS');
 		//console.log(bandwidth_matrix);
 		dikstra(Qos, startPoint, endPoint);
+
 		res.json(resStr);
 	});
 	//이건 Bandwith , jitter, delay, packetloss의 Weight를 주어 4가지 QoS를 고려한 QoSArraY를 생성하는 함수입니다..
@@ -119,12 +121,11 @@ module.exports = function(app, fs, http, Log)
 
 	}
 	function dikstra(graph, startPoint, endPoint){
+
 		var inf = 99999;
 		var isVisits = [];
 		var distance = [];
 		var historyPath = [];
-
-		var switchCnt = 30;
 		var nextVertex = startPoint;
 		var min = 0;
 

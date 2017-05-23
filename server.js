@@ -51,6 +51,8 @@ var r_logging = require('./router/logging_router')(app, fs, http, Log);
 var r_optimumpath = require('./router/optimumpath_router')(app, fs, http);
 var r_dijkstra = require('./router/dijkstra')(app, fs, http);
 
+var r_setTopology = require('./router/topology_set_router')(app, fs, http);
+
 //Server 시작
 var server = app.listen(8080, function(){
  console.log("Express server has started on port 8080")
