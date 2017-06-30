@@ -29,13 +29,13 @@ module.exports = function(app, fs, http, Log)
       QoS_matrix.push(packetloss_matrix);
       //console.log(bandwidth_matrix);
       console.log(QoS_matrix);
-      var appRequirement=[];
-      appRequirement.push({
+       var appRequirement=[];
+       appRequirement.push({
          "bandwidth":80,
          "delay":0.3,
          "jitter":0.4,
          "packetloss":10
-      });
+       });
       var startPoint = 2;
       var endPoint = 28;
       //Dikstra 함수... bandwidth_matrix, jitter_matrix, delay_matrix, packetloss_matrix 중 하나만 삽입
@@ -77,12 +77,12 @@ module.exports = function(app, fs, http, Log)
             }
          }
       }
-      console.log('---Average---');
+      console.log('평균값을 출력하겠습니다... AVG!');
       console.log(math.sum(bAry)/bAry.length);
       console.log(math.sum(jAry)/jAry.length);
       console.log(math.sum(dAry)/dAry.length);
       console.log(math.sum(pAry)/pAry.length);
-      console.log('---Standard deviation---');
+      console.log('표준편차 값을 출력하겠습니다...STD!');
       console.log(math.std(bAry));
       console.log(math.std(jAry));
       console.log(math.std(dAry));
@@ -175,10 +175,12 @@ module.exports = function(app, fs, http, Log)
       resStr += '시작점'+startPoint+' 부터 도착점 :'+endPoint+' ';
       resStr += '최단거리 : '+distance[endPoint]+' '
       console.log('');
-      console.log('Dijkstra Algorithm result');
+      console.log('');
+      console.log('');
+      console.log('');
 
       console.log('QoS weights [bandwidth = 1 jitter = 2.5 delay = 1.5 packetloss = 0.5]');
-      console.log('From '+startPoint+' to '+endPoint+' / Shortest distance : '+distance[endPoint]);
+      console.log(startPoint+'부터 도착점 :'+endPoint+' 최단거리 : '+distance[endPoint]);
       //console.log(historyPath);
       console.timeEnd('optimum');
 
@@ -209,16 +211,13 @@ module.exports = function(app, fs, http, Log)
          if (i-1 >= 0){
             var nodeA = path[i]
             var nodeB = path[i-1]
-            console.log(nodeA+' And '+nodeB+' link attribute');
-            console.log('[Bandwidth : '+bandwidth_matrix[nodeA][nodeB]+'\tJitter : '+jitter_matrix[nodeA][nodeB]);
-            console.log(' Delay :'+delay_matrix[nodeA][nodeB]+'\tPacketloss : '+packetloss_matrix[nodeA][nodeB]+']');
-            console.log(nodeA+' And '+nodeB+' link T-Score');
-            console.log('[Bandwidth T-Score : '+(((((bandwidth_matrix[nodeA][nodeB]-bAvg)/bStd)*20)+100)*bWeight)+'\tJitter T-Score : '+(((((jitter_matrix[nodeA][nodeB]-jAvg)/jStd)*20)+100)*jWeight));
-            console.log(' Delay T-Score : '+(((((delay_matrix[nodeA][nodeB]-dAvg)/dStd)*20)+100)*dWeight)+'\tPacketloss T-Score : '+(((((packetloss_matrix[nodeA][nodeB]-pAvg)/pStd)*20)+100)*pWeight)+']');
+            console.log(nodeA+' And '+nodeB+' link attribute   [Bandwidth : '+bandwidth_matrix[nodeA][nodeB]+' Jitter : '+jitter_matrix[nodeA][nodeB]+' Delay :'+delay_matrix[nodeA][nodeB]+' Packetloss : '+packetloss_matrix[nodeA][nodeB]+']');
+            console.log(nodeA+' And '+nodeB+' link T-Score  [Bandwidth T-Score : '+(((((bandwidth_matrix[nodeA][nodeB]-bAvg)/bStd)*20)+100)*bWeight)+' Jitter T-Score : '+(((((jitter_matrix[nodeA][nodeB]-jAvg)/jStd)*20)+100)*jWeight)+' Delay T-Score : '+(((((delay_matrix[nodeA][nodeB]-dAvg)/dStd)*20)+100)*dWeight)+' Packetloss T-Score : '+(((((packetloss_matrix[nodeA][nodeB]-pAvg)/pStd)*20)+100)*pWeight)+']');
             console.log('');
             //console.log(bandwidth_matrix);
          }
       }
+      console.log('경로 :');
       var str = '';
       while (path.length != 0) {
          // resStr += path[path.length-1]+' ';
@@ -229,7 +228,7 @@ module.exports = function(app, fs, http, Log)
          }
 
       }
-      console.log('Path : '+ str);
+      console.log(str);
    }
    function getDateTime(){
       return moment().format('YYYY-MM-DD hh:mm:ss');
