@@ -6,7 +6,7 @@ module.exports = function(app, fs, http)
 		
 		var result = [];
 
-		var x_pos = 3;
+		var x_pos = 1;
 		var y_pos = 10;
 
 		for(var i=0 ; i < x_pos ; i++){

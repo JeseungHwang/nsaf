@@ -50,6 +50,7 @@ var r_host = require('./router/host_router')(app, fs, http);
 var r_logging = require('./router/logging_router')(app, fs, http, Log);
 var r_optimumpath = require('./router/optimumpath_router')(app, fs, http);
 var r_dijkstra = require('./router/dijkstra')(app, fs, http);
+var r_situation = require('./router/situation_router')(app, fs, http);
 
 var r_setTopology = require('./router/topology_set_router')(app, fs, http);
 

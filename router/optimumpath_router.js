@@ -3,12 +3,12 @@ module.exports = function(app, fs, http, Log)
 	var moment = require('moment');
 
 	app.post('/path', function(req,res){
-		console.time('optimum');
+		console.time('runtime');
 		var generation = 1;
 		var allTopologyInfo = req.body['node'];
-		var switchCnt = 40;
+		var switchCnt = 30;
 		var startPoint = 2;
-		var endPoint = 38;
+		var endPoint = 28;
 		var topoMatrix = setTopologyMatrix(allTopologyInfo.slice(0), switchCnt);
 		var bandwidth_matrix = setQoSMatrix(allTopologyInfo, switchCnt, 'bandwidth');
 		var jitter_matrix = setQoSMatrix(allTopologyInfo, switchCnt, 'jitter');
@@ -25,101 +25,165 @@ module.exports = function(app, fs, http, Log)
 
 		var appRequirement=[];
 		appRequirement.push({
-			"bandwidth":80,
-			"delay":10,
-			"jitter":10,
-			"packetloss":10
+         "bandwidth":60,
+         "delay":30.0,
+         "jitter":30.0,
+         "packetloss":30
 		});
 
-		while(chromosomes.length < 20){
+		while(chromosomes.length <10){
 			var initGene = initPopulation(startPoint, endPoint, topoMatrix, switchCnt);
 			if(!isExistGene(chromosomes, initGene)){
 				chromosomes.push(initGene);
 				geneCnt++;
 			}
-			console.log("gene make : "+initGene);
+			//console.log("gene make : "+initGene);
 		}
-		//console.log(chromosomes);
+		console.log('---Initialization---');
+		console.log(chromosomes);
 
+		console.log('---Selection---');
 		var selection_paths = selection(chromosomes, QoS_matrix, appRequirement);
 		var offspring_path = [];
 		//console.log(selection_paths);
 		for(var i=0; i<selection_paths.length; i++){
 			offspring_path.push(selection_paths[i].path);
 		}
+		console.log(offspring_path);
+		var offpsringSize = offspring_path.length;
 
-		for(var i=0; i<selection_paths.length; i+=2){
-			var crossOver_result = crossOver(selection_paths[i].path, selection_paths[i+1].path);
-			if(crossOver_result.length >0){
+		console.log('---Operator---');
+		for(var i=0; i<offpsringSize; i+=2){
+			var crossOver_result = crossOver(offspring_path[i], offspring_path[i+1]);
+			console.log(crossOver_result);
+
+			if(crossOver_result.length != 0){
 				offspring_path.push(crossOver_result[0]);
 				offspring_path.push(crossOver_result[1]);
 			}else{
 				console.log("---Mutation---");
 				while(true){
-					var mutation_path = mutation(topoMatrix, selection_paths[i].path);
-					if(!isSamePath(selection_paths[i].path, mutation_path)){
-						offspring_path.push(mutation_path);
+					var mutation_path = mutation(topoMatrix, offspring_path[i]);
+					if(!isSamePath(offspring_path[i], mutation_path)){
+						if(mutation_path.length != 0){
+							console.log("Muation Result");
+							console.log("Before : " + offspring_path[i]);
+							offspring_path.push(mutation_path);
+							console.log("After : " + mutation_path);
+						}
 						break;
 					}
 				}
 				while(true){
-					var mutation_path = mutation(topoMatrix, selection_paths[i+1].path);
-					if(!isSamePath(selection_paths[i+1].path, mutation_path)){
-						offspring_path.push(mutation_path);
-						break;
+					var mutation_path = mutation(topoMatrix, offspring_path[i+1]);
+					if(!isSamePath(offspring_path[i+1], mutation_path)){
+						if(mutation_path.length != 0){
+							console.log("Muation Result");
+							console.log("Before : " + offspring_path[i+1]);
+							offspring_path.push(mutation_path);
+							console.log("After : " + mutation_path);
+						}
+						break;	
 					}
 				}
 			}
 		}
-
+		//console.log(offspring_path);
 		var optimumPath=[];
 		var flag = true;
 		while(flag){
 			generation++;
-			for(var i=0; i<offspring_path.length; i++){
-				if(fitness(offspring_path[i])){
-					optimumPath.push(offspring_path[i]);
-					flag = false;
-					break;
+			selection_paths = selection(offspring_path, QoS_matrix, appRequirement);
+			for(var i=0; i<selection_paths.length; i++){
+				if(fitness(selection_paths[i])){	// 추천된 경로가 fitness 적절하다면 OPtimum Path로 등록
+						/*console.log(fitness(selection_paths[i]));
+						console.log(optimumPath);
+						console.log(optimumPath.length);*/
+					if(optimumPath.length >0){
+						//for(var j=0; j<optimumPath.length; j++){
+						//	if(!isSamePath(optimumPath[j], selection_paths[i])){
+								optimumPath.push(selection_paths[i]);
+
+						//	}	
+						//}	
+					}else{
+						optimumPath.push(selection_paths[i]);
+					}
 				}
 			}
-
-			selection_paths = selection(offspring_path, QoS_matrix, appRequirement);
-			offspring_path = [];
-
-			for(var i=0; i<selection_paths.length; i++){
-				offspring_path.push(selection_paths[i]);
+			if(optimumPath.length > 1){
+				flag = false;
+				break;
 			}
 
-			for(var i=0; i<selection_paths.length; i+=2){
-				var crossOver_result = crossOver(selection_paths[i].path, selection_paths[i+1].path);
-				if(crossOver_result.length >0){
+			console.log('---Selection---');
+			offspring_path = [];
+			//console.log(selection_paths);
+			for(var i=0; i<selection_paths.length; i++){
+				offspring_path.push(selection_paths[i].path);
+			}
+			//
+			console.log(offspring_path);
+			offpsringSize = offspring_path.length;
+
+			console.log('---Operator---');
+			for(var i=0; i<offpsringSize; i+=2){
+				var crossOver_result = crossOver(offspring_path[i], offspring_path[i+1]);
+				console.log(crossOver_result);
+
+				if(crossOver_result.length != 0){
 					offspring_path.push(crossOver_result[0]);
 					offspring_path.push(crossOver_result[1]);
 				}else{
 					console.log("---Mutation---");
 					while(true){
-						var mutation_path = mutation(topoMatrix, selection_paths[i].path);
-						if(!isSamePath(selection_paths[i].path, mutation_path)){
-							offspring_path.push(mutation_path);
+						var mutation_path = mutation(topoMatrix, offspring_path[i]);
+						if(!isSamePath(offspring_path[i], mutation_path)){
+							if(mutation_path.length != 0){
+								console.log("Muation Result");
+								console.log("Before : " + offspring_path[i]);
+								offspring_path.push(mutation_path);
+								console.log("After : " + mutation_path);
+							}
 							break;
 						}
 					}
 					while(true){
-						var mutation_path = mutation(topoMatrix, selection_paths[i+1].path);
-						if(!isSamePath(selection_paths[i+1].path, mutation_path)){
-							offspring_path.push(mutation_path);
-							break;
+						var mutation_path = mutation(topoMatrix, offspring_path[i+1]);
+						if(!isSamePath(offspring_path[i+1], mutation_path)){
+							if(mutation_path.length != 0){
+								console.log("Muation Result");
+								console.log("Before : " + offspring_path[i+1]);
+								offspring_path.push(mutation_path);
+								console.log("After : " + mutation_path);
+							}
+							break;	
 						}
 					}
 				}
 			}
+			console.log('Generation : '+generation);
 		}
+
 		console.log("---Finish---");
-		console.log("Generation : "+generation);
-		console.log(optimumPath);
-		console.timeEnd('optimum');
-		res.json(optimumPath);
+		console.log("Genetic Algorithm Result");
+	    console.log("Generation : "+generation);
+	    console.log("Node Count : "+switchCnt);
+	    console.log("Start Point : "+startPoint+" / End Point : "+endPoint);
+	    console.log("Optimum Path >>> ");
+
+	    for(var i=0 ; i < optimumPath.length; i++){
+	    	console.log(optimumPath[i].path);
+		    console.log("Bandwidth Score : " +optimumPath[i].bandwidth);
+		    console.log("Packetloss Score : " +optimumPath[i].packetloss);
+		    console.log("Delay Score : " +optimumPath[i].delay);
+		    console.log("Jitter Score : " +optimumPath[i].jitter);
+		    console.log("Fitness Score : " + optimumPath[i].total);
+		    console.log();
+	    }
+	    
+	    console.timeEnd('runtime');
+		res.json('1');
 	});
 
 	function getDateTime(){
@@ -139,10 +203,10 @@ module.exports = function(app, fs, http, Log)
 		for(var obj in req_data){
 			var src = parseInt(req_data[obj].switchDPID.substring(req_data[obj].switchDPID.length-2, req_data[obj].switchDPID.length));
 			var dst = parseInt(req_data[obj].dst.substring(req_data[obj].dst.length-2, req_data[obj].dst.length));
-			//if(!isNaN(dst)){
+			if(!isNaN(dst)){
 				matrix[src-1][dst-1]=1;
 				matrix[dst-1][src-1]=1;
-			//}
+			}
 		}
 		return matrix;
 	}
@@ -158,10 +222,10 @@ module.exports = function(app, fs, http, Log)
 		for(var obj in req_data){
 			var src = parseInt(req_data[obj].switchDPID.substring(req_data[obj].switchDPID.length-2, req_data[obj].switchDPID.length));
 			var dst = parseInt(req_data[obj].dst.substring(req_data[obj].dst.length-2, req_data[obj].dst.length));
-			//if(!isNaN(dst)){
+			if(!isNaN(dst)){
 				matrix[src-1][dst-1] = req_data[obj][qos];
 				matrix[dst-1][src-1] = req_data[obj][qos];
-			//}
+			}
 		}
 		return matrix;
 	}
@@ -175,7 +239,6 @@ module.exports = function(app, fs, http, Log)
 		visitPath.push(startPoint);
 		var isVisited = new Array();
 		while(visitPath.indexOf(endPoint) == -1){
-			console.log(visitPath);
 			var position = Math.floor(Math.random() * switchCnt);
 			if(initAllPath[prePoint][position] == 1){	//난수 번호의 토폴로지가 연결되어 있는지
 				if(visitPath.indexOf(position) == -1){	//생성하는 경로에 아직 추가안된 부분이라면 추가
@@ -239,6 +302,8 @@ module.exports = function(app, fs, http, Log)
 
 	function crossOver(path1, path2){
 		console.log("---CrossOver---");
+		console.log(path1);
+		console.log(path2);
 		var offspring_path = [];
 		var cross_point = [];
 		var cross_pointSize = 0;
@@ -260,20 +325,33 @@ module.exports = function(app, fs, http, Log)
 			}
 		}
 		console.log("CrossOver Point >>");
-		console.log(cross_point);
 		if(cross_point.length >= 2){
-			var position = Math.floor(Math.random() * cross_point.length);
-			var x1 = cross_point[position].i;
-			var y1 = cross_point[position].j;
-			var convert_path1 = path1.slice(0,x1).concat(path2.slice(y1,path2.length));
-			var convert_path2 = path2.slice(0,y1).concat(path1.slice(x1,path1.length));
+			var position = Math.floor(Math.random() * (cross_point.length-1))+1;
+			//var x1 = cross_point[position].i;
+			//var y1 = cross_point[position].j;
+			var x1 = cross_point[0].i;
+			var y1 = cross_point[0].j;
+			var x2 = cross_point[position].i;
+			var y2 = cross_point[position].j;
+			console.log(x1+','+y1);
+			console.log(x2+','+y2);
+			var convert_path1 = path1.slice(0,x1).concat(path2.slice(y1,y2)).concat(path1.slice(x2, path1.length));
+			var convert_path2 = path2.slice(0,y1).concat(path1.slice(x1,x2)).concat(path2.slice(y2, path2.length));
+			//var convert_path1 = path1.slice(0,x1).concat(path2.slice(y1,path2.length));
+			//var convert_path2 = path2.slice(0,y1).concat(path1.slice(x1,path1.length));
 
+			console.log("CrossOver Result");
 			if(!isSamePath(path1, convert_path1)){
 				offspring_path.push(convert_path1);
+				console.log(offspring_path[0]);
 			}
 			if(!isSamePath(path2, convert_path2)){
 				offspring_path.push(convert_path2);
+				console.log(offspring_path[1]);
 			}
+
+		}else{
+			console.log("CrossOver point not found");
 		}
 		return offspring_path;
 	}
@@ -282,124 +360,110 @@ module.exports = function(app, fs, http, Log)
 		return ge > 0;
 	}
 
-
 	function mutation(topoMatrix, path){
 		var allPath = topoMatrix.slice(0);
 		var path_len = path.length-2;
-		console.log(path);
-		var startPoint;
-		var endPoint;
-		while(true){
-			startPoint = Math.floor(Math.random() * path_len + 1);
-			endPoint = Math.floor(Math.random() * path_len + 1);
-			if((startPoint == endPoint) || (endPoint-startPoint == 1)){
-				startPoint = Math.floor(Math.random() * path_len + 1);
-				endPoint = Math.floor(Math.random() * path_len + 1);
-			}else if(startPoint > endPoint){
-				var temp = endPoint;
-				endPoint = startPoint;
-				startPoint = temp;
-			}else{
-				break;
+		var startPoint = Math.floor(Math.random()*path_len)+1;
+		var endPoint = Math.floor(Math.random()*path_len)+1;
+		var visitPath = [];
+		var endPathBackup = [];
+		var loopLimitCnt = 0;
+		if(path.length > 3){
+			while(true){
+				if(startPoint == endPoint){
+					endPoint = Math.floor(Math.random()*path_len)+1;
+				}else if(startPoint > endPoint){
+					var temp = startPoint;
+					startPoint = endPoint;
+					endPoint = temp;
+				}else if(startPoint < endPoint){
+					break;
+				}
 			}
+		}else{
+			startPoint = 1;
+			endPoint = 2;
 		}
-		var cnt = 0;
-		var visitPath = new Array();
-		var prePoint = path[startPoint];
-		var backup_endPath = path.slice(endPoint, path.length);
 
-		for(var i=0; i<=startPoint; i++){
+		for(var i=0; i<startPoint; i++){
+			allPath[path[i]][path[i+1]] = 0;
 			visitPath.push(path[i]);
-			if(i!=0){
-				allPath[path[i-1]][path[i]]	= 0;
-				allPath[path[i]][path[i-1]]	= 0;
-			}
 		}
-		while(visitPath.indexOf(path[endPoint]) == -1){
-			if(allPath[prePoint][path[endPoint]] == 1){
-				break;
-			}
-			var candidateNode = [];
-			for(var i=0; i<allPath.length; i++){
-				if(allPath[prePoint][i] == 1){
-					candidateNode.push(i);
-				}
-			}
-			var position = Math.floor(Math.random() * candidateNode.length);
-			if(candidateNode.length > 0){
-				if(visitPath.indexOf(candidateNode[position]) == -1){
-					if(backup_endPath.indexOf(candidateNode[position]) == -1){
-						visitPath.push(candidateNode[position]);
-						allPath[prePoint][candidateNode[position]] = 0;
-						allPath[candidateNode[position]][prePoint] = 0;
-						prePoint = candidateNode[position];
-						cnt = 0;
-					}else{
-						cnt++;
-					}
-				}else{
-					cnt++;
-				}
-				if(cnt > 1000){
-					while(true){
-						startPoint = Math.floor(Math.random() * path_len + 1);
-						endPoint = Math.floor(Math.random() * path_len + 1);
-						if((startPoint == endPoint) || (endPoint-startPoint == 1)){
-							startPoint = Math.floor(Math.random() * path_len + 1);
-							endPoint = Math.floor(Math.random() * path_len + 1);
-						}else if(startPoint > endPoint){
-							var temp = endPoint;
-							endPoint = startPoint;
-							startPoint = temp;
-						}else{
-							break;
-						}
-					}
 
-					visitPath = [];
-					prePoint = path[startPoint];
-					allPath = topoMatrix.slice(0);
-					for(var i=0; i<=startPoint; i++){
-						visitPath.push(path[i]);
-						if(i!=0){
-							allPath[path[i-1]][path[i]]	= 0;
-							allPath[path[i]][path[i-1]]	= 0;
+		for(var i=endPoint; i<path.length; i++){
+			endPathBackup.push(path[i]);
+		}
+
+		console.log(path);
+		console.log("Mutation Point : "+startPoint+","+endPoint);
+		var prePoint = startPoint;
+		var flag = true;
+		var cnt = 0;
+		while(flag){
+			cnt++;
+			loopLimitCnt++;
+			if(allPath[prePoint].indexOf(1) == 1){
+				var nowPath = allPath[prePoint].slice(0);
+
+				var availPath = [];
+			
+				if(nowPath[endPoint] == 1){	//현재 갈수 있는 경로중에 엔드포인트랑 연결이 되어있다면
+					if(path[endPoint] != path[path.length-1]){	//엔드포인트가 넘어온 경로의 맨끝이 아닐때 미리 경로 지나온곳 표시
+						for(var i=endPoint; i<path.length; i++){
+							visitPath.push(path[i]);
+						}
+					}else{
+						visitPath.push(path[endPoint]);
+					}
+					flag = false;
+				}else{	//현재 갈수있는 경로중에 엔드포인트랑 연결이 안되어 있다면
+					for(var i=0;i<nowPath.length; i++){
+						if(nowPath[i] == 1){
+							availPath.push(i);
+						}
+					}	
+					var position = Math.floor(Math.random() * availPath.length);
+					if(visitPath.indexOf(availPath[position]) == -1){	//방문한 경로에 현재 랜덤으로 찍힌 경로가 추가되어 있지 않을때
+						if(endPathBackup.indexOf(availPath[position]) == -1){
+							visitPath.push(availPath[position]);
+							allPath[prePoint][availPath[position]] = 0;
+							prePoint = availPath[position];	
 						}
 					}
 				}
-			}else{
+			}
+			//var nowPath= allPath[prePoint].slice(0);
+
+
+			if(cnt > 100){
+				startPoint = Math.floor(Math.random()*path_len)+1;
+				endPoint = Math.floor(Math.random()*path_len)+1;
 				while(true){
-					startPoint = Math.floor(Math.random() * path_len + 1);
-					endPoint = Math.floor(Math.random() * path_len + 1);
-					if((startPoint == endPoint) || (endPoint-startPoint == 1)){
-						startPoint = Math.floor(Math.random() * path_len + 1);
-						endPoint = Math.floor(Math.random() * path_len + 1);
+					if(startPoint == endPoint){
+						endPoint = Math.floor(Math.random()*path_len)+1;
 					}else if(startPoint > endPoint){
-						var temp = endPoint;
-						endPoint = startPoint;
-						startPoint = temp;
-					}else{
+						var temp = startPoint;
+						startPoint = endPoint;
+						endPoint = temp;
+					}else if(startPoint < endPoint){
 						break;
 					}
 				}
-				visitPath = [];
-				prePoint = path[startPoint];
 				allPath = topoMatrix.slice(0);
-				for(var i=0; i<=startPoint; i++){
-					visitPath.push(path[i]);
-					if(i!=0){
-						allPath[path[i-1]][path[i]]	= 0;
-						allPath[path[i]][path[i-1]]	= 0;
-					}
-				}
+				prePoint = startPoint;
 				cnt = 0;
+				visitPath = [];
+				for(var i=0; i<startPoint; i++){
+					allPath[path[i]][path[i+1]] = 0;
+					visitPath.push(path[i]);
+				}
+			}
+
+			if(loopLimitCnt > 5000){
+				visitPath = [];
+				flag = false;
 			}
 		}
-
-		for(var i=endPoint; i<path.length; i++ ){
-			visitPath.push(path[i]);
-		}
-		console.log("Mutation Point >> Start : "+startPoint+','+"End :"+endPoint );
 		return visitPath;
 	}
 
@@ -426,42 +490,42 @@ module.exports = function(app, fs, http, Log)
 			var jitter_arr = [];
 			var packetloss_fitness = 0;
 			var packetloss_arr = [];
-			for(var j=0; j<chmos[i].length;j++){
+			for(var j=0; j<chmos[i].length-1;j++){
 				var x = chmos[i][j];
 				var y = chmos[i][j+1];
 				if(appReq[0].bandwidth <= qos[0][x][y]){
 					bandwidth_fitness+=1;
 					bandwidth_arr.push(qos[0][x][y]);
 				}else{
-					bandwidth_fitness-=1;
+					//bandwidth_fitness-=1;
 					bandwidth_arr.push(qos[0][x][y]);
 				}
-				if(appReq[0].jitter <= qos[1][x][y]){
+				if(appReq[0].jitter >= qos[1][x][y]){
 					jitter_fitness+=1;
 					jitter_arr.push(qos[1][x][y]);
 				}else{
-					jitter_fitness-=1;
+					//jitter_fitness-=1;
 					jitter_arr.push(qos[1][x][y]);
 				}
-				if(appReq[0].delay <= qos[2][x][y]){
+				if(appReq[0].delay >= qos[2][x][y]){
 					delay_fitness+=1;
 					delay_arr.push(qos[2][x][y]);
 				}else{
-					delay_fitness-=1;
+					//delay_fitness-=1;
 					delay_arr.push(qos[2][x][y]);
 				}
-				if(appReq[0].packetloss <= qos[3][x][y]){
+				if(appReq[0].packetloss >= qos[3][x][y]){
 					packetloss_fitness+=1;
 					packetloss_arr.push(qos[3][x][y]);
 				}else{
-					packetloss_fitness-=1;
+					//packetloss_fitness-=1;
 					packetloss_arr.push(qos[3][x][y]);
 				}
 			}
-			bandwidth_fitness /= chmos.length;
-			delay_fitness /= chmos.length;
-			jitter_fitness /= chmos.length;
-			packetloss_fitness /= chmos.length;
+			bandwidth_fitness = (bandwidth_fitness/(chmos[i].length-1));
+			delay_fitness = (delay_fitness/(chmos[i].length-1));
+			jitter_fitness = (jitter_fitness/(chmos[i].length-1));
+			packetloss_fitness = (packetloss_fitness/(chmos[i].length-1));
 
 			selection_result.push({
 				"path" : chmos[i],
@@ -492,17 +556,17 @@ module.exports = function(app, fs, http, Log)
 		var select_cnt = 0;
 
 		var selection_path = [];
-		for(var i=0; i<4; i++){
+		for(var i=0; i<8; i++){
 			selection_path.push(selection_result[i]);
 		}
-
 		return selection_path;
 	}
 
 	function fitness(offspring_path){
-		if(offspring_path.total >= 2){
+		if(offspring_path.total >= 4){
 			return true;
+		}else{
+			return false;	
 		}
-		return false;
 	}
 }

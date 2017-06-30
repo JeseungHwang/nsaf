@@ -69,38 +69,39 @@
               <h1>Create Account</h1>
               <h2>Admin Information</h2>
               <div>
-                <input type="text" class="form-control" placeholder="Admin ID" required="true" ng-model="accountProf.adminID" name="adminID"/>
+                <label>Admin ID</label><input type="text" class="form-control" placeholder="Admin ID" required="true" ng-model="accountProf.adminID" name="adminID"/>
                 <!-- <a id="checkid" class="btn btn-default" style="position: relative; left: 190px; top: -63px;">ID Check</a> -->
               </div>
               <div>
-                <input type="password" class="form-control" placeholder="Password" required="true" ng-model="accountProf.adminPW" name="adminPW"/>
+                <label>Password</label><input type="password" class="form-control" placeholder="Password" required="true" ng-model="accountProf.adminPW" name="adminPW"/>
               </div>
               <div>
-                <input type="text" class="form-control" placeholder="Admin Name" required="true" ng-model="accountProf.adminName" name="adminName"/>
+               <label>Admin Name</label><input type="text" class="form-control" placeholder="Admin Name" required="true" ng-model="accountProf.adminName" name="adminName"/>
               </div>
               <div>
-                <input type="tell" class="form-control" placeholder="Admin Phone Number" required="true" ng-model="accountProf.adminTell" name="adminTell"/>
+                <label>Admin Phone number</label><input type="tell" class="form-control" placeholder="Admin Phone Number" required="true" ng-model="accountProf.adminTell" name="adminTell"/>
               </div>
               <br>
               <h2>Application Information</h2>
               <br>
               <div>
-                <input type="text" class="form-control" placeholder="Application Name" required="true" ng-model="accountProf.appName" name="appName"/>
+                <label>Application Name</label><input type="text" class="form-control" placeholder="Application Name" required="true" ng-model="accountProf.appName" name="appName"/>
               </div>
               <div>
-                <input type="text" class="form-control" placeholder="Application IPv4" required="true" ng-model="accountProf.ipver4" name="ipver4"/>
+                <label>IPv4 Address</label><input type="text" class="form-control" placeholder="Application IPv4" required="true" ng-model="accountProf.ipver4" name="ipver4"/>
               </div>
               <div>
-                <input type="text" class="form-control" placeholder="Application IPv6" required="true" ng-model="accountProf.ipver6" name="ipver6"/>
+                <label>IPv6 Address</label><input type="text" class="form-control" placeholder="Application IPv6" required="true" ng-model="accountProf.ipver6" name="ipver6"/>
               </div>
               <div style="padding-bottom: 13px; position: relative;">
+                <label>Application Type</label>
                 <select class="form-control" required="true" ng-model="accountProf.appType" name="appType">
                   <option value="">- Application Type -</option>
                   <option ng-repeat="item in appTypeList" value="{{item.id}}">{{item.name}}</option>
                 </select>
               </div>
               <div>
-                <input type="text" class="form-control" placeholder="Description" required="" ng-model="accountProf.description" name="description"/>
+                <label>Application Description</label><input type="text" class="form-control" placeholder="Description" required="" ng-model="accountProf.description" name="description"/>
               </div>
               <br>
               <div>
